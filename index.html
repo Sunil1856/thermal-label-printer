@@ -137,6 +137,31 @@
     </div>
   </div>
 
+  <!-- Quick Model Change & Data Bar -->
+  <div class="cad-quick-bar" style="background:#0f172a;border-bottom:1px solid #334155;padding:6px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;z-index:25;">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:0.75rem;font-weight:700;color:#38bdf8;text-transform:uppercase;letter-spacing:0.04em;">⚡ Quick Data Entry:</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Model:</span>
+      <input type="text" id="quick-input-model" class="cad-input" value="Heavy Metal Frame" placeholder="Type Model Name" style="width:190px;padding:4px 8px;font-size:0.8rem;background:#1e293b;">
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Price (₹):</span>
+      <input type="text" id="quick-input-price" class="cad-input" value="1449" placeholder="1449" style="width:75px;padding:4px 8px;font-size:0.8rem;background:#1e293b;">
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">SKU / Barcode:</span>
+      <input type="text" id="quick-input-barcode" class="cad-input" value="SB-02581" placeholder="SB-001" style="width:115px;padding:4px 8px;font-size:0.8rem;background:#1e293b;">
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+      <span style="font-size:0.72rem;color:#64748b;">(Positions & sizes remain 100% locked)</span>
+      <button class="ribbon-btn" id="btn-lock-master-layout" style="background:#4f46e5;border-color:#6366f1;color:#fff;font-weight:700;font-size:0.75rem;padding:4px 12px;" title="Freeze and save these exact element positions & sizes as your permanent master layout">
+        ⭐ Lock as Master Template
+      </button>
+    </div>
+  </div>
+
   <!-- CAD Main Workspace -->
   <div class="cad-workspace">
 
@@ -735,14 +760,22 @@
         // Initialize CAD Studio Engine
         studio = new (window.CadStudio || CadStudio)(stage, inspector);
 
-        // Check for Auto-Saved design or load default
+        // Check for Master Default layout first, then Auto-Saved design, then standard preset
         let initialTmpl = (window.CAD_PRESET_TEMPLATES && (window.CAD_PRESET_TEMPLATES.specs_buddy_sample || window.CAD_PRESET_TEMPLATES.specs_buddy_dumbbell)) || SAMPLE_SPECS_TAG;
         try {
-          const auto = localStorage.getItem("cad_autosave_state");
-          if (auto) {
-            const parsed = JSON.parse(auto);
-            if (parsed && parsed.canvas && parsed.elements && parsed.elements.length > 0) {
-              initialTmpl = parsed;
+          const master = localStorage.getItem("cad_master_default_layout");
+          if (master) {
+            const parsedMaster = JSON.parse(master);
+            if (parsedMaster && parsedMaster.canvas && parsedMaster.elements && parsedMaster.elements.length > 0) {
+              initialTmpl = parsedMaster;
+            }
+          } else {
+            const auto = localStorage.getItem("cad_autosave_state");
+            if (auto) {
+              const parsed = JSON.parse(auto);
+              if (parsed && parsed.canvas && parsed.elements && parsed.elements.length > 0) {
+                initialTmpl = parsed;
+              }
             }
           }
         } catch (e) {}
@@ -765,18 +798,98 @@
             const tmpls = (window.CAD_PRESET_TEMPLATES || { specs_buddy_sample: SAMPLE_SPECS_TAG });
             const t = tmpls[key] || SAMPLE_SPECS_TAG;
             studio.loadTemplate(t);
+            syncQuickInputsFromCanvas();
           } else if (val.startsWith("project:")) {
             const id = val.replace("project:", "");
             loadProject(id);
+            syncQuickInputsFromCanvas();
           }
         });
 
         // 1-Click Load Sample Tag Button (resets canvas to exact default sample)
         document.getElementById("btn-load-sample").addEventListener("click", () => {
           studio.loadTemplate(SAMPLE_SPECS_TAG);
-          try { localStorage.removeItem("cad_autosave_state"); } catch(e) {}
+          try {
+            localStorage.removeItem("cad_autosave_state");
+            localStorage.removeItem("cad_master_default_layout");
+          } catch(e) {}
+          syncQuickInputsFromCanvas();
           showToast("Loaded Specs Buddy Sample Tag!");
         });
+
+        // Quick Model Change & Data Entry Bindings
+        function syncQuickInputsFromCanvas() {
+          let model = "";
+          let price = "";
+          let barcode = "";
+          studio.elements.forEach(elem => {
+            if (elem.id.includes("model") || elem.id.includes("frame")) model = elem.content;
+            if (elem.id.includes("price") || elem.id.includes("offer")) price = elem.content.replace(/[^0-9]/g, "");
+            if (elem.type === "barcode") barcode = elem.barcodeText || elem.codeValue;
+          });
+          const mInp = document.getElementById("quick-input-model");
+          const pInp = document.getElementById("quick-input-price");
+          const bInp = document.getElementById("quick-input-barcode");
+          if (mInp && model) mInp.value = model;
+          if (pInp && price) pInp.value = price;
+          if (bInp && barcode) bInp.value = barcode;
+        }
+
+        document.getElementById("quick-input-model").addEventListener("input", function () {
+          const val = this.value;
+          const target = studio.elements.find(e => e.id.includes("model") || e.id.includes("frame") || e.id.includes("prod"));
+          if (target) {
+            target.content = val;
+            studio.render();
+          }
+        });
+
+        document.getElementById("quick-input-price").addEventListener("input", function () {
+          const clean = this.value.replace(/[^0-9]/g, "");
+          const target = studio.elements.find(e => e.id.includes("price") || e.id.includes("offer"));
+          if (target) {
+            target.content = clean ? `₹${clean} /-` : "";
+            studio.render();
+          }
+        });
+
+        document.getElementById("quick-input-barcode").addEventListener("input", function () {
+          const val = this.value;
+          const barcodeElem = studio.elements.find(e => e.type === "barcode");
+          if (barcodeElem) {
+            barcodeElem.codeValue = val;
+            barcodeElem.barcodeText = val;
+          }
+          const textElem = studio.elements.find(e => e.id.includes("barcode_text") || e.id.includes("sku"));
+          if (textElem) {
+            textElem.content = val;
+          }
+          studio.render();
+        });
+
+        document.getElementById("btn-lock-master-layout").addEventListener("click", () => {
+          const masterSnapshot = {
+            id: "master_default",
+            name: "Master Default Template",
+            savedAt: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            canvas: JSON.parse(JSON.stringify(studio.canvas)),
+            elements: JSON.parse(JSON.stringify(studio.elements)),
+            zoom: studio.zoom,
+            snapGrid: studio.snapGrid
+          };
+          try {
+            localStorage.setItem("cad_master_default_layout", JSON.stringify(masterSnapshot));
+          } catch(e) {}
+          fetch("/api/projects", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(masterSnapshot)
+          }).catch(() => {});
+
+          showToast("⭐ Locked! These exact positions & sizes are now your Master Template.");
+        });
+
+        syncQuickInputsFromCanvas();
 
         // Project Management Modal Events
         const projectsModal = document.getElementById("modal-projects");
