@@ -48,6 +48,13 @@
       this.undoStack.push(snapshot);
       if (this.undoStack.length > 40) this.undoStack.shift();
       this.redoStack = [];
+      try {
+        localStorage.setItem("cad_autosave_state", JSON.stringify({
+          canvas: this.canvas,
+          elements: this.elements,
+          zoom: this.zoom
+        }));
+      } catch(e) {}
     }
 
     undo() {
@@ -632,6 +639,10 @@
                 <option value="0" ${this.snapGrid === 0 ? 'selected' : ''}>Off (Free Float)</option>
               </select>
             </div>
+
+            <button type="button" class="ribbon-btn" id="btn-insp-save-project" style="width:100%;background:#059669;color:#fff;font-weight:bold;margin-top:12px;justify-content:center;padding:8px 10px;">
+              💾 Save Design as Custom Project
+            </button>
           </div>
         `;
 
@@ -699,6 +710,9 @@
         });
         document.getElementById("insp-grid-snap")?.addEventListener("change", (e) => {
           this.snapGrid = parseFloat(e.target.value);
+        });
+        document.getElementById("btn-insp-save-project")?.addEventListener("click", () => {
+          document.getElementById("btn-save-project-ribbon")?.click();
         });
         return;
       }

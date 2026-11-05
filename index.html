@@ -106,6 +106,16 @@
 
       <div class="ribbon-separator"></div>
 
+      <button class="ribbon-btn" id="btn-save-project-ribbon" style="background:#059669;border-color:#34d399;color:#fff;font-weight:700;" title="Save current tag design with all positions and sizes">
+        💾 Save Design
+      </button>
+
+      <button class="ribbon-btn" id="btn-my-projects-ribbon" style="background:#1e293b;border-color:#475569;color:#e2e8f0;font-weight:600;" title="Open saved projects and templates">
+        📁 My Projects
+      </button>
+
+      <div class="ribbon-separator"></div>
+
       <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Template:</span>
       <select id="select-ribbon-template" class="cad-input" style="width:230px;padding:4px 8px;"></select>
 
@@ -140,6 +150,11 @@
       <button class="rail-btn" id="rail-btn-batch" title="Batch Multi-Product Queue">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      </button>
+      <button class="rail-btn" id="rail-btn-projects" title="Saved Projects & Templates">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
         </svg>
       </button>
       <button class="rail-btn" id="rail-btn-network" title="Network Access for Other PCs">
@@ -304,6 +319,52 @@
     </div>
   </div>
 
+  <!-- Saved Projects & Custom Templates Modal -->
+  <div class="cad-modal-overlay" id="modal-projects">
+    <div class="cad-modal-box" style="max-width:620px;">
+      <div class="cad-modal-header">
+        <h3>📁 Saved Projects & Tag Designs</h3>
+        <button id="btn-close-projects-modal" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;">&times;</button>
+      </div>
+      <div class="cad-modal-body">
+        <!-- Save Current Design Box -->
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px;margin-bottom:18px;">
+          <label style="font-size:0.78rem;color:#38bdf8;font-weight:bold;text-transform:uppercase;display:block;margin-bottom:6px;">
+            💾 Save Current Canvas Design:
+          </label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="input-save-project-name" class="cad-input" placeholder="e.g., Specs Buddy Metal Frame Tag" style="flex:1;">
+            <button class="ribbon-btn" id="btn-action-save-project" style="background:#059669;color:#fff;font-weight:bold;border:none;white-space:nowrap;padding:6px 14px;">
+              Save Project
+            </button>
+            <button class="ribbon-btn" id="btn-action-export-json" style="background:#0284c7;color:#fff;font-weight:bold;border:none;white-space:nowrap;padding:6px 12px;" title="Download design as JSON file to your PC">
+              ⬇️ Export .json
+            </button>
+          </div>
+        </div>
+
+        <!-- Import Section & List Header -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #334155;">
+          <h4 style="font-size:0.9rem;color:#ffffff;margin:0;">My Saved Projects:</h4>
+          <div>
+            <label class="ribbon-btn" style="cursor:pointer;margin:0;font-size:0.75rem;padding:4px 10px;">
+              📥 Import .json File
+              <input type="file" id="input-import-project" accept=".json" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <!-- Saved Projects List Container -->
+        <div id="saved-projects-list" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+      <div class="cad-modal-footer">
+        <button class="ribbon-btn" id="btn-close-projects-done" style="background:#2563eb;color:#fff;">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Hidden Stage Dedicated Solely for window.print() -->
   <div id="print-stage"></div>
 
@@ -418,6 +479,229 @@
         ]
       };
 
+      const PROJECTS_STORAGE_KEY = "thermal_cad_saved_projects";
+
+      function getSavedProjects() {
+        try {
+          const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function saveCurrentProject(nameInput) {
+        const inputEl = document.getElementById("input-save-project-name");
+        const name = (nameInput || (inputEl ? inputEl.value : "") || "").trim();
+        if (!name) {
+          showToast("Please enter a name for your design!");
+          return;
+        }
+
+        const projects = getSavedProjects();
+        const id = "proj_" + Date.now();
+        const project = {
+          id,
+          name,
+          savedAt: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          canvas: JSON.parse(JSON.stringify(studio.canvas)),
+          elements: JSON.parse(JSON.stringify(studio.elements)),
+          zoom: studio.zoom,
+          snapGrid: studio.snapGrid
+        };
+
+        projects[id] = project;
+        try {
+          localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+        } catch (e) {
+          console.error("Storage error:", e);
+        }
+
+        renderSavedProjectsList();
+        populateTemplateDropdown();
+        if (inputEl) inputEl.value = "";
+        showToast(`Design "${name}" saved successfully!`);
+      }
+
+      function deleteProject(id) {
+        const projects = getSavedProjects();
+        if (projects[id]) {
+          const name = projects[id].name;
+          if (confirm(`Delete saved project "${name}"?`)) {
+            delete projects[id];
+            localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+            renderSavedProjectsList();
+            populateTemplateDropdown();
+            showToast(`Deleted "${name}"`);
+          }
+        }
+      }
+
+      function loadProject(id) {
+        const projects = getSavedProjects();
+        if (projects[id]) {
+          const p = projects[id];
+          studio.loadTemplate(p);
+          if (p.snapGrid !== undefined) {
+            studio.snapGrid = p.snapGrid;
+            const snapSel = document.getElementById("select-ribbon-snap");
+            if (snapSel) snapSel.value = String(p.snapGrid);
+          }
+          document.getElementById("modal-projects").classList.remove("active");
+          showToast(`Loaded "${p.name}"!`);
+        }
+      }
+
+      function exportProjectJson(id) {
+        let p = null;
+        if (id) {
+          p = getSavedProjects()[id];
+        } else {
+          const nameVal = document.getElementById("input-save-project-name")?.value.trim() || "My_Custom_Tag";
+          p = {
+            id: "proj_" + Date.now(),
+            name: nameVal,
+            savedAt: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            canvas: studio.canvas,
+            elements: studio.elements,
+            zoom: studio.zoom,
+            snapGrid: studio.snapGrid
+          };
+        }
+        if (!p) return;
+        const jsonStr = JSON.stringify(p, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        const safeFileName = (p.name || "tag_design").replace(/[^a-zA-Z0-9_\-]/g, "_") + ".json";
+        a.download = safeFileName;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast(`Exported "${p.name}.json"!`);
+      }
+
+      function importProjectJson(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (!data.canvas || !data.elements) {
+              alert("Invalid design JSON file.");
+              return;
+            }
+            const id = "proj_" + Date.now();
+            data.id = id;
+            if (!data.name) data.name = file.name.replace(/\.[^/.]+$/, "");
+            data.savedAt = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const projects = getSavedProjects();
+            projects[id] = data;
+            localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+
+            studio.loadTemplate(data);
+            renderSavedProjectsList();
+            populateTemplateDropdown();
+            document.getElementById("modal-projects").classList.remove("active");
+            showToast(`Imported & loaded "${data.name}"!`);
+          } catch (err) {
+            alert("Error parsing JSON file: " + err.message);
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function renderSavedProjectsList() {
+        const container = document.getElementById("saved-projects-list");
+        if (!container) return;
+        const projects = getSavedProjects();
+        const ids = Object.keys(projects).reverse();
+
+        if (ids.length === 0) {
+          container.innerHTML = `
+            <div style="text-align:center;padding:24px;color:#94a3b8;font-size:0.85rem;">
+              No custom designs saved yet.<br>Customize your tag on the canvas and click "Save Project" above!
+            </div>
+          `;
+          return;
+        }
+
+        let html = "";
+        ids.forEach(id => {
+          const p = projects[id];
+          html += `
+            <div style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:0.88rem;font-weight:bold;color:#f8fafc;">${escapeHtml(p.name)}</div>
+                <div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;">
+                  ${p.canvas.width} × ${p.canvas.height} mm ${p.canvas.isDumbbell ? '(Dumbbell Tag)' : ''} • ${p.elements.length} elements • ${p.savedAt || ''}
+                </div>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button class="ribbon-btn btn-proj-load" data-id="${p.id}" style="background:#10b981;border-color:#10b981;color:#fff;font-weight:bold;padding:4px 10px;font-size:0.75rem;">
+                  ▶️ Load
+                </button>
+                <button class="ribbon-btn btn-proj-export" data-id="${p.id}" style="background:#0284c7;border-color:#0284c7;color:#fff;padding:4px 8px;font-size:0.75rem;" title="Download .json file">
+                  ⬇️
+                </button>
+                <button class="ribbon-btn btn-proj-del" data-id="${p.id}" style="color:#ef4444;border-color:#ef4444;padding:4px 8px;font-size:0.75rem;" title="Delete project">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+
+        container.querySelectorAll(".btn-proj-load").forEach(btn => {
+          btn.addEventListener("click", () => loadProject(btn.getAttribute("data-id")));
+        });
+        container.querySelectorAll(".btn-proj-export").forEach(btn => {
+          btn.addEventListener("click", () => exportProjectJson(btn.getAttribute("data-id")));
+        });
+        container.querySelectorAll(".btn-proj-del").forEach(btn => {
+          btn.addEventListener("click", () => deleteProject(btn.getAttribute("data-id")));
+        });
+      }
+
+      function populateTemplateDropdown() {
+        const ribbonSelect = document.getElementById("select-ribbon-template");
+        if (!ribbonSelect) return;
+        ribbonSelect.innerHTML = "";
+
+        // Standard Presets Group
+        const stdGroup = document.createElement("optgroup");
+        stdGroup.label = "📐 Standard Label Templates";
+        const tmpls = (window.CAD_PRESET_TEMPLATES || { specs_buddy_sample: SAMPLE_SPECS_TAG });
+        for (let k in tmpls) {
+          if (k === 'specs_buddy_dumbbell') continue; // Skip alias
+          const opt = document.createElement("option");
+          opt.value = "preset:" + k;
+          opt.textContent = tmpls[k].name;
+          if (k === "specs_buddy_sample") opt.selected = true;
+          stdGroup.appendChild(opt);
+        }
+        ribbonSelect.appendChild(stdGroup);
+
+        // Saved Custom Projects Group
+        const projects = getSavedProjects();
+        const projectIds = Object.keys(projects);
+        if (projectIds.length > 0) {
+          const userGroup = document.createElement("optgroup");
+          userGroup.label = "💾 My Saved Projects";
+          projectIds.forEach(id => {
+            const p = projects[id];
+            const opt = document.createElement("option");
+            opt.value = "project:" + id;
+            opt.textContent = `⭐ ${p.name} (${p.canvas.width}×${p.canvas.height}mm)`;
+            userGroup.appendChild(opt);
+          });
+          ribbonSelect.appendChild(userGroup);
+        }
+      }
+
       function initApp() {
         const stage = document.getElementById("cad-printable-stage");
         const inspector = document.getElementById("inspector-panel");
@@ -425,34 +709,71 @@
         // Initialize CAD Studio Engine
         studio = new (window.CadStudio || CadStudio)(stage, inspector);
 
-        // Load Default Preset: Specs Buddy Sample Tag
-        const defaultTmpl = (window.CAD_PRESET_TEMPLATES && (window.CAD_PRESET_TEMPLATES.specs_buddy_sample || window.CAD_PRESET_TEMPLATES.specs_buddy_dumbbell)) || SAMPLE_SPECS_TAG;
-        studio.loadTemplate(defaultTmpl);
+        // Check for Auto-Saved design or load default
+        let initialTmpl = (window.CAD_PRESET_TEMPLATES && (window.CAD_PRESET_TEMPLATES.specs_buddy_sample || window.CAD_PRESET_TEMPLATES.specs_buddy_dumbbell)) || SAMPLE_SPECS_TAG;
+        try {
+          const auto = localStorage.getItem("cad_autosave_state");
+          if (auto) {
+            const parsed = JSON.parse(auto);
+            if (parsed && parsed.canvas && parsed.elements && parsed.elements.length > 0) {
+              initialTmpl = parsed;
+            }
+          }
+        } catch (e) {}
+
+        studio.loadTemplate(initialTmpl);
 
         // Check Network IP from server
         fetchNetworkInfo();
 
-        // Populate Ribbon Template dropdown
+        // Populate Template Dropdown with Presets & User Saved Projects
+        populateTemplateDropdown();
         const ribbonSelect = document.getElementById("select-ribbon-template");
-        ribbonSelect.innerHTML = "";
-        const tmpls = (window.CAD_PRESET_TEMPLATES || { specs_buddy_sample: SAMPLE_SPECS_TAG });
-        for (let k in tmpls) {
-          const opt = document.createElement("option");
-          opt.value = k;
-          opt.textContent = tmpls[k].name;
-          if (k.includes("specs_buddy")) opt.selected = true;
-          ribbonSelect.appendChild(opt);
-        }
-
         ribbonSelect.addEventListener("change", (e) => {
-          const t = tmpls[e.target.value] || SAMPLE_SPECS_TAG;
-          studio.loadTemplate(t);
+          const val = e.target.value;
+          if (val.startsWith("preset:")) {
+            const key = val.replace("preset:", "");
+            const tmpls = (window.CAD_PRESET_TEMPLATES || { specs_buddy_sample: SAMPLE_SPECS_TAG });
+            const t = tmpls[key] || SAMPLE_SPECS_TAG;
+            studio.loadTemplate(t);
+          } else if (val.startsWith("project:")) {
+            const id = val.replace("project:", "");
+            loadProject(id);
+          }
         });
 
-        // 1-Click Load Sample Tag Button
+        // 1-Click Load Sample Tag Button (resets canvas to exact default sample)
         document.getElementById("btn-load-sample").addEventListener("click", () => {
           studio.loadTemplate(SAMPLE_SPECS_TAG);
+          try { localStorage.removeItem("cad_autosave_state"); } catch(e) {}
           showToast("Loaded Specs Buddy Sample Tag!");
+        });
+
+        // Project Management Modal Events
+        const projectsModal = document.getElementById("modal-projects");
+        document.getElementById("btn-save-project-ribbon").addEventListener("click", () => {
+          renderSavedProjectsList();
+          projectsModal.classList.add("active");
+          setTimeout(() => document.getElementById("input-save-project-name")?.focus(), 100);
+        });
+        document.getElementById("btn-my-projects-ribbon").addEventListener("click", () => {
+          renderSavedProjectsList();
+          projectsModal.classList.add("active");
+        });
+        document.getElementById("rail-btn-projects").addEventListener("click", () => {
+          renderSavedProjectsList();
+          projectsModal.classList.add("active");
+        });
+        document.getElementById("btn-close-projects-modal").addEventListener("click", () => projectsModal.classList.remove("active"));
+        document.getElementById("btn-close-projects-done").addEventListener("click", () => projectsModal.classList.remove("active"));
+
+        document.getElementById("btn-action-save-project").addEventListener("click", () => saveCurrentProject());
+        document.getElementById("btn-action-export-json").addEventListener("click", () => exportProjectJson(null));
+        document.getElementById("input-import-project").addEventListener("change", (e) => {
+          if (e.target.files && e.target.files[0]) {
+            importProjectJson(e.target.files[0]);
+            e.target.value = "";
+          }
         });
 
         // Snap selector
