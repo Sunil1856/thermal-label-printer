@@ -77,6 +77,12 @@
     loadTemplate(tmpl) {
       this.pushHistory();
       this.canvas = JSON.parse(JSON.stringify(tmpl.canvas));
+      try {
+        const savedOffX = localStorage.getItem("cad_print_offset_x");
+        const savedOffY = localStorage.getItem("cad_print_offset_y");
+        if (savedOffX !== null) this.canvas.printOffsetX = parseFloat(savedOffX) || 0.0;
+        if (savedOffY !== null) this.canvas.printOffsetY = parseFloat(savedOffY) || 0.0;
+      } catch(e) {}
       this.elements = JSON.parse(JSON.stringify(tmpl.elements));
       // Ensure all barcode elements have full text properties
       this.elements.forEach(elem => {
@@ -685,9 +691,11 @@
 
         document.getElementById("insp-offset-x")?.addEventListener("change", (e) => {
           this.canvas.printOffsetX = parseFloat(e.target.value) || 0.0;
+          try { localStorage.setItem("cad_print_offset_x", this.canvas.printOffsetX); } catch(e) {}
         });
         document.getElementById("insp-offset-y")?.addEventListener("change", (e) => {
           this.canvas.printOffsetY = parseFloat(e.target.value) || 0.0;
+          try { localStorage.setItem("cad_print_offset_y", this.canvas.printOffsetY); } catch(e) {}
         });
         document.getElementById("insp-grid-snap")?.addEventListener("change", (e) => {
           this.snapGrid = parseFloat(e.target.value);
@@ -772,9 +780,13 @@
             <div class="form-group">
               <label class="cad-checkbox-label">
                 <input type="checkbox" id="elem-show-text" ${elem.showText ? 'checked' : ''}>
-                <span>Show Text Below Barcode</span>
+                <span>Show Embedded SVG Text</span>
               </label>
             </div>
+
+            <button type="button" class="ribbon-btn" id="btn-barcode-split-text" style="width:100%;background:#0284c7;color:#fff;justify-content:center;margin:6px 0 10px 0;font-size:0.75rem;padding:6px 10px;">
+              ✂️ Convert into Separate Editable Text Element
+            </button>
 
             <div id="barcode-text-details" style="display:${elem.showText ? 'block' : 'none'};">
               <div class="form-row">
@@ -938,12 +950,43 @@
       });
 
       // Barcode Events
+      document.getElementById("btn-barcode-split-text")?.addEventListener("click", () => {
+        this.pushHistory();
+        elem.showText = false;
+        const currentH = elem.h;
+        elem.h = Math.max(4.0, parseFloat((currentH * 0.68).toFixed(1)));
+        const newTextElem = {
+          id: "barcode_text_" + Date.now(),
+          type: "text",
+          x: elem.x,
+          y: parseFloat((elem.y + elem.h + 0.3).toFixed(1)),
+          w: elem.w,
+          h: 3.2,
+          content: elem.barcodeText || elem.codeValue || "SB-02581",
+          fontSize: elem.fontSize || 7.5,
+          fontWeight: elem.fontWeight || "bold",
+          fontFamily: elem.fontFamily || "'Courier New', Courier, monospace",
+          textAlign: elem.textAlign || "center",
+          verticalAlign: "middle",
+          rotation: elem.rotation || 0
+        };
+        this.elements.push(newTextElem);
+        this.selectedId = newTextElem.id;
+        this.render();
+        this.updatePropertyInspector();
+      });
+
       document.getElementById("elem-code-val")?.addEventListener("input", (e) => {
         elem.codeValue = e.target.value;
         if (!elem.barcodeText || elem.barcodeText === elem.codeValue) {
           elem.barcodeText = e.target.value;
           const textInput = document.getElementById("elem-barcode-text");
           if (textInput) textInput.value = e.target.value;
+        }
+        // Auto-sync separate text element if exists
+        const sepText = this.elements.find(el => el.id === "barcode_text" || (el.type === "text" && Math.abs(el.x - elem.x) < 2 && el.y > elem.y && el.y < elem.y + elem.h + 6));
+        if (sepText) {
+          sepText.content = e.target.value;
         }
         this.render();
       });
@@ -1036,6 +1079,11 @@
             if (customData.barcode) {
               elem.codeValue = customData.barcode;
               elem.barcodeText = customData.barcode;
+            }
+          }
+          if (elem.id.includes("barcode_text") || elem.id.includes("sku") || elem.id === "barcode_label") {
+            if (customData.barcode) {
+              elem.content = customData.barcode;
             }
           }
         });
