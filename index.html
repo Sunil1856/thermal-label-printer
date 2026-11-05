@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThermalPrint Pro CAD - Visual Label Designer & Network Studio</title>
+  <link rel="stylesheet" href="css/cad-style.css">
+</head>
+<body>
+
+  <!-- Top App Header -->
+  <header class="cad-header">
+    <div class="cad-logo-group">
+      <div class="cad-logo-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+        <span>ThermalPrint CAD</span>
+      </div>
+      <span class="cad-version-pill">CAD Studio</span>
+    </div>
+
+    <!-- Center: Network LAN Sharing Badge -->
+    <div class="network-badge" id="btn-network-badge" title="Click to share with other computers on your Wi-Fi/LAN">
+      <span class="pulse-dot"></span>
+      <span>Network: <strong id="header-network-url">http://192.168.1.40:3000</strong></span>
+      <span style="font-size: 0.72rem; opacity: 0.8; text-decoration: underline;">(Share)</span>
+    </div>
+
+    <!-- Right Header Actions -->
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <button class="ribbon-btn" id="btn-printer-guide">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        Printer Settings
+      </button>
+
+      <button class="ribbon-btn" id="btn-test-print">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+        </svg>
+        Test Calibration
+      </button>
+
+      <div style="display:flex;align-items:center;gap:6px;margin-left:6px;">
+        <span style="font-size:0.78rem;color:#94a3b8;font-weight:600;">Copies:</span>
+        <input type="number" id="input-copies" value="1" min="1" max="1000" class="cad-input" style="width:60px;padding:4px 6px;">
+      </div>
+
+      <button class="ribbon-btn" id="btn-print-now" style="background:#10b981;border-color:#10b981;color:white;padding:7px 18px;font-size:0.85rem;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        PRINT LABELS
+      </button>
+    </div>
+  </header>
+
+  <!-- CAD Ribbon / Toolbar -->
+  <div class="cad-ribbon">
+    <!-- Left: Element Insertion Tools -->
+    <div class="ribbon-group">
+      <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;margin-right:4px;">ADD:</span>
+      <button class="ribbon-btn" id="btn-add-text">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+        Text
+      </button>
+
+      <button class="ribbon-btn" id="btn-add-barcode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5v14M8 5v14M12 5v14M17 5v14M21 5v14"/></svg>
+        Barcode
+      </button>
+
+      <button class="ribbon-btn" id="btn-add-qr">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        QR Code
+      </button>
+
+      <button class="ribbon-btn" id="btn-add-line">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Line
+      </button>
+
+      <button class="ribbon-btn" id="btn-add-rect">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Box Frame
+      </button>
+
+      <div class="ribbon-separator"></div>
+
+      <!-- Undo / Redo -->
+      <button class="ribbon-btn" id="btn-undo" title="Undo (Ctrl+Z)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
+      </button>
+      <button class="ribbon-btn" id="btn-redo" title="Redo (Ctrl+Y)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3L21 13"/></svg>
+      </button>
+    </div>
+
+    <!-- Center/Right: Templates, Snap & Zoom -->
+    <div class="ribbon-group">
+      <button class="ribbon-btn" id="btn-load-sample" style="background:#0284c7;border-color:#38bdf8;color:#fff;font-weight:700;" title="Restore exact Specs Buddy Sample Tag">
+        👓 Sample Tag (SPECS BUDDY)
+      </button>
+
+      <div class="ribbon-separator"></div>
+
+      <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Template:</span>
+      <select id="select-ribbon-template" class="cad-input" style="width:230px;padding:4px 8px;"></select>
+
+      <div class="ribbon-separator"></div>
+
+      <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Snap:</span>
+      <select id="select-ribbon-snap" class="cad-input" style="width:85px;padding:4px 6px;">
+        <option value="0.5">0.5 mm</option>
+        <option value="1.0">1.0 mm</option>
+        <option value="0">Off</option>
+      </select>
+
+      <div class="ribbon-separator"></div>
+
+      <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Zoom:</span>
+      <button class="ribbon-btn" id="btn-zoom-out" style="padding:4px 8px;">-</button>
+      <span id="label-zoom" style="font-size:0.8rem;font-weight:bold;min-width:40px;text-align:center;">350%</span>
+      <button class="ribbon-btn" id="btn-zoom-in" style="padding:4px 8px;">+</button>
+    </div>
+  </div>
+
+  <!-- CAD Main Workspace -->
+  <div class="cad-workspace">
+
+    <!-- Left Rail: Mode Selection (CAD Designer vs Batch Queue) -->
+    <div class="cad-left-rail">
+      <button class="rail-btn active" id="rail-btn-designer" title="CAD Visual Designer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+      </button>
+      <button class="rail-btn" id="rail-btn-batch" title="Batch Multi-Product Queue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      </button>
+      <button class="rail-btn" id="rail-btn-network" title="Network Access for Other PCs">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Center CAD Canvas Viewport (with Rulers & Crosshairs) -->
+    <main class="cad-canvas-viewport" id="cad-canvas-viewport">
+      <!-- Rulers -->
+      <div class="ruler-corner">mm</div>
+      <div class="ruler-top-bar" id="ruler-top"></div>
+      <div class="ruler-left-bar" id="ruler-left"></div>
+
+      <!-- Dynamic mouse crosshairs on rulers -->
+      <div class="ruler-crosshair-x" id="ruler-cursor-x"></div>
+      <div class="ruler-crosshair-y" id="ruler-cursor-y"></div>
+
+      <!-- Bottom Floating Coordinate Badge -->
+      <div style="position:absolute;bottom:14px;left:42px;background:#0f172a;border:1px solid #334155;color:#38bdf8;padding:4px 10px;border-radius:6px;font-size:0.75rem;font-family:monospace;z-index:20;" id="cad-coords-badge">
+        X: 0.0 mm | Y: 0.0 mm
+      </div>
+
+      <!-- CAD Stage Wrapper -->
+      <div class="cad-canvas-container" id="cad-canvas-container">
+        <div class="cad-canvas-wrapper" id="cad-canvas-wrapper">
+          <!-- Printable Head Area (White Workspace) -->
+          <div class="cad-printable-stage" id="cad-printable-stage">
+            <!-- Dynamic CAD elements injected here -->
+          </div>
+
+          <!-- Dumbbell Tail Area (Right Loop) -->
+          <div class="cad-tail-stage" id="cad-tail-stage" title="Optical Tag Rat-Tail / Loop Area (Non-Printed)"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Batch Queue View (Alternative view when batch tab clicked) -->
+    <div id="cad-batch-view" style="display:none;flex:1;background:#0b1120;padding:24px;overflow-y:auto;">
+      <div style="max-width:900px;margin:auto;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div>
+            <h3 style="font-size:1.1rem;color:#ffffff;margin-bottom:4px;">Multi-Item Batch Printing Queue</h3>
+            <p style="font-size:0.8rem;color:#94a3b8;">Add multiple optical frames or products with different names, prices & barcodes to print an entire roll in one continuous batch.</p>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="ribbon-btn" id="btn-batch-add-current">➕ Add Current Design</button>
+            <button class="ribbon-btn" id="btn-batch-add-row">➕ Add Row</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <label class="ribbon-btn" style="cursor:pointer;margin:0;">
+            📥 Import CSV
+            <input type="file" id="batch-csv-input" accept=".csv" style="display:none;">
+          </label>
+          <button class="ribbon-btn" id="btn-batch-sample-csv">📄 Sample CSV</button>
+          <button class="ribbon-btn" id="btn-batch-clear" style="margin-left:auto;color:#ef4444;border-color:#ef4444;">🗑️ Clear Queue</button>
+        </div>
+
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem;color:#f8fafc;" id="batch-table">
+          <thead>
+            <tr style="border-bottom:1px solid #334155;color:#94a3b8;text-align:left;">
+              <th style="padding:10px;">Model / Product Name</th>
+              <th style="padding:10px;">Barcode / SKU</th>
+              <th style="padding:10px;">Price (₹)</th>
+              <th style="padding:10px;">Qty</th>
+              <th style="padding:10px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="batch-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right Property Inspector Panel -->
+    <aside class="cad-inspector-panel" id="inspector-panel">
+      <!-- Injected dynamically by cad-engine.js -->
+    </aside>
+
+  </div>
+
+  <!-- Network Share Modal -->
+  <div class="cad-modal-overlay" id="modal-network">
+    <div class="cad-modal-box">
+      <div class="cad-modal-header">
+        <h3>🌐 Connect & Print from Other Computers</h3>
+        <button id="btn-close-network-modal" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;">&times;</button>
+      </div>
+      <div class="cad-modal-body">
+        <p style="font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:14px;">
+          ThermalPrint CAD is running live on your local network (LAN / Wi-Fi). You can open it and print from <strong>any other desktop, laptop, or tablet</strong> connected to the same Wi-Fi router!
+        </p>
+
+        <div style="background:#1e293b;border:1px solid #38bdf8;border-radius:8px;padding:14px;margin-bottom:16px;">
+          <label style="font-size:0.75rem;color:#94a3b8;font-weight:bold;text-transform:uppercase;">URL for other computers:</label>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <input type="text" id="modal-network-url-input" class="cad-input" value="http://192.168.1.40:3000" readonly style="font-size:0.95rem;font-weight:bold;color:#38bdf8;">
+            <button class="ribbon-btn" id="btn-copy-network-url" style="background:#2563eb;color:white;border:none;padding:6px 14px;">Copy Link</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:#38bdf8;color:#0f172a;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">1</div>
+          <div>
+            <h4 style="font-size:0.9rem;color:#ffffff;margin-bottom:3px;">Open on any browser</h4>
+            <p style="font-size:0.8rem;color:#94a3b8;">On your second desktop or laptop, open Chrome or Edge and paste the link above.</p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-top:12px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:#38bdf8;color:#0f172a;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">2</div>
+          <div>
+            <h4 style="font-size:0.9rem;color:#ffffff;margin-bottom:3px;">Print directly</h4>
+            <p style="font-size:0.8rem;color:#94a3b8;">Hit Print! The label will print to your thermal printer without needing any installation on the other PC.</p>
+          </div>
+        </div>
+      </div>
+      <div class="cad-modal-footer">
+        <button class="ribbon-btn" id="btn-done-network-modal" style="background:#2563eb;color:#fff;">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printer Settings Guide Modal -->
+  <div class="cad-modal-overlay" id="modal-guide">
+    <div class="cad-modal-box">
+      <div class="cad-modal-header">
+        <h3>🖨️ Thermal Printer Best Settings</h3>
+        <button id="btn-close-guide" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;">&times;</button>
+      </div>
+      <div class="cad-modal-body">
+        <div style="display:flex;gap:12px;margin-bottom:14px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#2563eb;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">1</div>
+          <div>
+            <h4 style="color:#ffffff;font-size:0.9rem;">Destination Printer</h4>
+            <p style="font-size:0.82rem;color:#94a3b8;">Select your thermal printer (TSC, TVS, Zebra, Xprinter, Citizen, etc.).</p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-bottom:14px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#2563eb;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">2</div>
+          <div>
+            <h4 style="color:#ffffff;font-size:0.9rem;">Paper Size</h4>
+            <p style="font-size:0.82rem;color:#94a3b8;">Set page size to match your roll (e.g. <strong>81mm × 12mm</strong> or <strong>55mm × 12mm</strong>).</p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-bottom:14px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:#2563eb;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">3</div>
+          <div>
+            <h4 style="color:#ffffff;font-size:0.9rem;">Margins & Headers</h4>
+            <p style="font-size:0.82rem;color:#94a3b8;">Set Margins to <strong>"None"</strong> and uncheck <strong>"Headers and Footers"</strong>.</p>
+          </div>
+        </div>
+      </div>
+      <div class="cad-modal-footer">
+        <button class="ribbon-btn" id="btn-got-it-guide" style="background:#2563eb;color:#fff;">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Stage Dedicated Solely for window.print() -->
+  <div id="print-stage"></div>
+
+  <!-- Scripts -->
+  <script src="js/barcode.js"></script>
+  <script src="js/qrcode.js"></script>
+  <script src="js/cad-templates.js"></script>
+  <script src="js/cad-engine.js"></script>
+
+  <!-- App Controller Bootstrap -->
+  <script>
+    (function () {
+      'use strict';
+
+      let studio = null;
+      let batchItems = [
+        { id: 1, name: "Heavy Metal Frame", barcode: "SB-02581", price: "1449", qty: 10 },
+        { id: 2, name: "TR90 Matte Black Frame", barcode: "SB-02582", price: "1299", qty: 5 },
+        { id: 3, name: "Rimless Titanium Frame", barcode: "SB-02583", price: "1899", qty: 5 },
+        { id: 4, name: "Classic Aviator Gold", barcode: "SB-02584", price: "1599", qty: 8 }
+      ];
+
+      const SAMPLE_SPECS_TAG = {
+        id: "specs_buddy_sample",
+        name: "👓 Specs Buddy Sample Tag (81 × 12 mm)",
+        canvas: {
+          width: 81,
+          height: 12,
+          isDumbbell: true,
+          printableWidth: 55,
+          tailWidth: 26,
+          tailHeight: 3.5,
+          printOffsetX: 0.0,
+          printOffsetY: 0.0
+        },
+        elements: [
+          {
+            id: "brand_name",
+            type: "text",
+            x: 1.5,
+            y: 1.2,
+            w: 26.0,
+            h: 3.4,
+            content: "SPECS BUDDY",
+            fontSize: 8.5,
+            fontWeight: "bold",
+            fontFamily: "Arial",
+            textAlign: "left",
+            verticalAlign: "middle",
+            rotation: 0
+          },
+          {
+            id: "frame_model",
+            type: "text",
+            x: 1.5,
+            y: 4.8,
+            w: 26.0,
+            h: 3.2,
+            content: "Heavy Metal Frame",
+            fontSize: 7.5,
+            fontWeight: "bold",
+            fontFamily: "Arial",
+            textAlign: "left",
+            verticalAlign: "middle",
+            rotation: 0
+          },
+          {
+            id: "price_tag",
+            type: "text",
+            x: 1.5,
+            y: 8.2,
+            w: 26.0,
+            h: 3.4,
+            content: "₹1449 /-",
+            fontSize: 9.5,
+            fontWeight: "bold",
+            fontFamily: "Arial",
+            textAlign: "left",
+            verticalAlign: "middle",
+            rotation: 0
+          },
+          {
+            id: "barcode_1",
+            type: "barcode",
+            x: 29.0,
+            y: 1.0,
+            w: 24.5,
+            h: 10.0,
+            codeType: "CODE128",
+            codeValue: "SB-02581",
+            barcodeText: "SB-02581",
+            showText: true,
+            fontSize: 7.5,
+            barHeight: 6.5,
+            moduleWidth: 1.2,
+            textGap: 1.0,
+            fontWeight: "bold",
+            textAlign: "center",
+            fontFamily: "'Courier New', Courier, monospace",
+            stretch: true,
+            rotation: 0
+          }
+        ]
+      };
+
+      function initApp() {
+        const stage = document.getElementById("cad-printable-stage");
+        const inspector = document.getElementById("inspector-panel");
+
+        // Initialize CAD Studio Engine
+        studio = new (window.CadStudio || CadStudio)(stage, inspector);
+
+        // Load Default Preset: Specs Buddy Sample Tag
+        const defaultTmpl = (window.CAD_PRESET_TEMPLATES && (window.CAD_PRESET_TEMPLATES.specs_buddy_sample || window.CAD_PRESET_TEMPLATES.specs_buddy_dumbbell)) || SAMPLE_SPECS_TAG;
+        studio.loadTemplate(defaultTmpl);
+
+        // Check Network IP from server
+        fetchNetworkInfo();
+
+        // Populate Ribbon Template dropdown
+        const ribbonSelect = document.getElementById("select-ribbon-template");
+        ribbonSelect.innerHTML = "";
+        const tmpls = (window.CAD_PRESET_TEMPLATES || { specs_buddy_sample: SAMPLE_SPECS_TAG });
+        for (let k in tmpls) {
+          const opt = document.createElement("option");
+          opt.value = k;
+          opt.textContent = tmpls[k].name;
+          if (k.includes("specs_buddy")) opt.selected = true;
+          ribbonSelect.appendChild(opt);
+        }
+
+        ribbonSelect.addEventListener("change", (e) => {
+          const t = tmpls[e.target.value] || SAMPLE_SPECS_TAG;
+          studio.loadTemplate(t);
+        });
+
+        // 1-Click Load Sample Tag Button
+        document.getElementById("btn-load-sample").addEventListener("click", () => {
+          studio.loadTemplate(SAMPLE_SPECS_TAG);
+          showToast("Loaded Specs Buddy Sample Tag!");
+        });
+
+        // Snap selector
+        document.getElementById("select-ribbon-snap").addEventListener("change", (e) => {
+          studio.snapGrid = parseFloat(e.target.value);
+        });
+
+        // Toolbar Buttons
+        document.getElementById("btn-add-text").addEventListener("click", () => {
+          studio.addElement("text", { content: "New Text", fontSize: 8.5, w: 20, h: 3.5 });
+        });
+        document.getElementById("btn-add-barcode").addEventListener("click", () => {
+          studio.addElement("barcode", { codeValue: "SB-" + Math.floor(10000 + Math.random()*90000), w: 25, h: 9 });
+        });
+        document.getElementById("btn-add-qr").addEventListener("click", () => {
+          studio.addElement("qrcode", { w: 8, h: 8 });
+        });
+        document.getElementById("btn-add-line").addEventListener("click", () => {
+          studio.addElement("line", { w: 25, h: 0.5 });
+        });
+        document.getElementById("btn-add-rect").addEventListener("click", () => {
+          studio.addElement("rect", { w: 20, h: 8 });
+        });
+
+        document.getElementById("btn-undo").addEventListener("click", () => studio.undo());
+        document.getElementById("btn-redo").addEventListener("click", () => studio.redo());
+
+        // Zoom Controls
+        const zoomLabel = document.getElementById("label-zoom");
+        document.getElementById("btn-zoom-in").addEventListener("click", () => {
+          if (studio.zoom < 5.0) {
+            studio.zoom = parseFloat((studio.zoom + 0.5).toFixed(1));
+            zoomLabel.textContent = `${Math.round(studio.zoom * 100)}%`;
+            studio.render();
+          }
+        });
+        document.getElementById("btn-zoom-out").addEventListener("click", () => {
+          if (studio.zoom > 1.5) {
+            studio.zoom = parseFloat((studio.zoom - 0.5).toFixed(1));
+            zoomLabel.textContent = `${Math.round(studio.zoom * 100)}%`;
+            studio.render();
+          }
+        });
+
+        // Print Buttons
+        document.getElementById("btn-print-now").addEventListener("click", () => executePrint());
+        document.getElementById("btn-test-print").addEventListener("click", () => executeTestPrint());
+
+        // Modals
+        const networkModal = document.getElementById("modal-network");
+        const guideModal = document.getElementById("modal-guide");
+
+        document.getElementById("btn-network-badge").addEventListener("click", () => networkModal.classList.add("active"));
+        document.getElementById("rail-btn-network").addEventListener("click", () => networkModal.classList.add("active"));
+        document.getElementById("btn-close-network-modal").addEventListener("click", () => networkModal.classList.remove("active"));
+        document.getElementById("btn-done-network-modal").addEventListener("click", () => networkModal.classList.remove("active"));
+
+        document.getElementById("btn-printer-guide").addEventListener("click", () => guideModal.classList.add("active"));
+        document.getElementById("btn-close-guide").addEventListener("click", () => guideModal.classList.remove("active"));
+        document.getElementById("btn-got-it-guide").addEventListener("click", () => guideModal.classList.remove("active"));
+
+        // Copy Network Link
+        document.getElementById("btn-copy-network-url").addEventListener("click", () => {
+          const inp = document.getElementById("modal-network-url-input");
+          inp.select();
+          navigator.clipboard.writeText(inp.value).then(() => {
+            showToast("Network URL copied to clipboard!");
+          });
+        });
+
+        // Left Rail View Switcher (Designer vs Batch)
+        const designerBtn = document.getElementById("rail-btn-designer");
+        const batchBtn = document.getElementById("rail-btn-batch");
+        const canvasViewport = document.getElementById("cad-canvas-viewport");
+        const batchView = document.getElementById("cad-batch-view");
+
+        designerBtn.addEventListener("click", () => {
+          designerBtn.classList.add("active");
+          batchBtn.classList.remove("active");
+          canvasViewport.style.display = "flex";
+          batchView.style.display = "none";
+        });
+
+        batchBtn.addEventListener("click", () => {
+          batchBtn.classList.add("active");
+          designerBtn.classList.remove("active");
+          canvasViewport.style.display = "none";
+          batchView.style.display = "block";
+          renderBatchTable();
+        });
+
+        initBatchEvents();
+      }
+
+      function fetchNetworkInfo() {
+        fetch("/api/network-info")
+          .then(r => r.json())
+          .then(data => {
+            if (data && data.networkUrl) {
+              document.getElementById("header-network-url").textContent = data.networkUrl;
+              document.getElementById("modal-network-url-input").value = data.networkUrl;
+            }
+          })
+          .catch(() => {
+            // Fallback to detected LAN IP
+            const fallback = "http://192.168.1.40:3000";
+            document.getElementById("header-network-url").textContent = fallback;
+            document.getElementById("modal-network-url-input").value = fallback;
+          });
+      }
+
+      function executePrint() {
+        const copies = parseInt(document.getElementById("input-copies").value, 10) || 1;
+        const printStage = document.getElementById("print-stage");
+        printStage.innerHTML = "";
+
+        // Check if currently on Batch View with items
+        const isBatchActive = document.getElementById("rail-btn-batch").classList.contains("active");
+
+        if (isBatchActive && batchItems.length > 0) {
+          batchItems.forEach(item => {
+            const qty = parseInt(item.qty, 10) || 1;
+            const labelHtml = studio.buildPrintHtml(item);
+            for (let c = 0; c < qty; c++) {
+              printStage.innerHTML += labelHtml;
+            }
+          });
+        } else {
+          const labelHtml = studio.buildPrintHtml();
+          for (let i = 0; i < copies; i++) {
+            printStage.innerHTML += labelHtml;
+          }
+        }
+
+        // Inject dynamic @page rule
+        let styleTag = document.getElementById("dynamic-print-rule");
+        if (!styleTag) {
+          styleTag = document.createElement("style");
+          styleTag.id = "dynamic-print-rule";
+          document.head.appendChild(styleTag);
+        }
+        styleTag.textContent = `
+          @page {
+            size: ${studio.canvas.width}mm ${studio.canvas.height}mm !important;
+            margin: 0mm !important;
+          }
+        `;
+
+        setTimeout(() => window.print(), 100);
+      }
+
+      function executeTestPrint() {
+        const printStage = document.getElementById("print-stage");
+        printStage.innerHTML = `
+          <div class="print-label-item" style="width:${studio.canvas.width}mm;height:${studio.canvas.height}mm;display:flex;align-items:center;justify-content:space-between;padding:1.5mm;box-sizing:border-box;border:1px solid #000;">
+            <div style="font-size:7pt;font-weight:bold;line-height:1.2;">
+              <div>CAD CALIBRATION</div>
+              <div style="font-size:6pt;">${studio.canvas.width}x${studio.canvas.height}mm</div>
+            </div>
+            <div>
+              ${BarcodeEngine.renderSVG("CODE128", "TEST-CAD", { height: 16, showText: true, fontSize: 7 })}
+            </div>
+          </div>
+        `;
+
+        let styleTag = document.getElementById("dynamic-print-rule");
+        if (!styleTag) {
+          styleTag = document.createElement("style");
+          styleTag.id = "dynamic-print-rule";
+          document.head.appendChild(styleTag);
+        }
+        styleTag.textContent = `@page { size: ${studio.canvas.width}mm ${studio.canvas.height}mm !important; margin: 0mm !important; }`;
+
+        setTimeout(() => window.print(), 100);
+      }
+
+      // Batch Table Handlers
+      function renderBatchTable() {
+        const tbody = document.getElementById("batch-tbody");
+        tbody.innerHTML = "";
+        batchItems.forEach((item, idx) => {
+          const tr = document.createElement("tr");
+          tr.style.borderBottom = "1px solid #1e293b";
+          tr.innerHTML = `
+            <td style="padding:8px;"><input type="text" class="cad-input" value="${item.name}" data-idx="${idx}" data-f="name"></td>
+            <td style="padding:8px;"><input type="text" class="cad-input" value="${item.barcode}" data-idx="${idx}" data-f="barcode"></td>
+            <td style="padding:8px;"><input type="text" class="cad-input" value="${item.price}" data-idx="${idx}" data-f="price" style="width:75px;"></td>
+            <td style="padding:8px;"><input type="number" class="cad-input" value="${item.qty}" data-idx="${idx}" data-f="qty" style="width:60px;"></td>
+            <td style="padding:8px;"><button class="ribbon-btn btn-del-b" data-idx="${idx}" style="color:#ef4444;border-color:#ef4444;padding:2px 8px;">✕</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        tbody.querySelectorAll("input").forEach(inp => {
+          inp.addEventListener("input", function () {
+            const i = parseInt(this.getAttribute("data-idx"), 10);
+            const f = this.getAttribute("data-f");
+            batchItems[i][f] = this.value;
+          });
+        });
+
+        tbody.querySelectorAll(".btn-del-b").forEach(btn => {
+          btn.addEventListener("click", function () {
+            const i = parseInt(this.getAttribute("data-idx"), 10);
+            batchItems.splice(i, 1);
+            renderBatchTable();
+          });
+        });
+      }
+
+      function initBatchEvents() {
+        document.getElementById("btn-batch-add-current").addEventListener("click", () => {
+          let model = "Frame";
+          let price = "1449";
+          let barcode = "SB-001";
+          studio.elements.forEach(e => {
+            if (e.id.includes("model") || e.id.includes("frame")) model = e.content;
+            if (e.id.includes("price")) price = e.content.replace(/[^0-9]/g, "");
+            if (e.type === "barcode") barcode = e.barcodeText || e.codeValue;
+          });
+          batchItems.push({ id: Date.now(), name: model, barcode, price, qty: 10 });
+          renderBatchTable();
+          showToast("Added current design to batch queue!");
+        });
+
+        document.getElementById("btn-batch-add-row").addEventListener("click", () => {
+          batchItems.push({ id: Date.now(), name: "Metal Frame", barcode: "SB-" + Math.floor(10000+Math.random()*90000), price: "1449", qty: 5 });
+          renderBatchTable();
+        });
+
+        document.getElementById("btn-batch-clear").addEventListener("click", () => {
+          if (confirm("Clear all batch items?")) {
+            batchItems = [];
+            renderBatchTable();
+          }
+        });
+
+        document.getElementById("btn-batch-sample-csv").addEventListener("click", () => {
+          const csv = "Model Name,Barcode,Price,Qty\nHeavy Metal Frame,SB-02581,1449,10\nTR90 Matte Black Frame,SB-02582,1299,5\nRimless Titanium Frame,SB-02583,1899,5\nClassic Aviator Gold,SB-02584,1599,8";
+          const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "batch_frames_sample.csv";
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      function showToast(msg) {
+        let toast = document.getElementById("cad-toast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "cad-toast";
+          toast.className = "cad-toast";
+          document.body.appendChild(toast);
+        }
+        toast.textContent = msg;
+        toast.style.opacity = "1";
+        setTimeout(() => toast.style.opacity = "0", 2500);
+      }
+
+      window.addEventListener("DOMContentLoaded", initApp);
+    })();
+  </script>
+</body>
+</html>

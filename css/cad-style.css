@@ -1,0 +1,601 @@
+/* ==========================================================================
+   ThermalPrint Pro - CAD Studio & Network Printing Stylesheet
+   ========================================================================== */
+
+:root {
+  --cad-bg: #0b1120;
+  --cad-panel: #1e293b;
+  --cad-card: #0f172a;
+  --cad-border: #334155;
+  --cad-accent: #38bdf8;
+  --cad-primary: #2563eb;
+  --cad-success: #10b981;
+  --cad-danger: #ef4444;
+  --cad-text: #f8fafc;
+  --cad-muted: #94a3b8;
+  --grid-line: rgba(56, 189, 248, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--cad-bg);
+  color: var(--cad-text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Header */
+.cad-header {
+  height: 52px;
+  background: #0f172a;
+  border-bottom: 1px solid var(--cad-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  z-index: 30;
+}
+
+.cad-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cad-logo-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cad-version-pill {
+  background: linear-gradient(135deg, #0284c7, #38bdf8);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* Network LAN Badge in Header */
+.network-badge {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.network-badge:hover {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: #34d399;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* CAD Ribbon / Tools Toolbar */
+.cad-ribbon {
+  height: 48px;
+  background: #1e293b;
+  border-bottom: 1px solid var(--cad-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  gap: 12px;
+  z-index: 20;
+}
+
+.ribbon-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ribbon-btn {
+  background: #0f172a;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.ribbon-btn:hover {
+  background: #334155;
+  border-color: #64748b;
+  color: #ffffff;
+}
+
+.ribbon-btn.active {
+  background: var(--cad-primary);
+  border-color: var(--cad-primary);
+  color: white;
+}
+
+.ribbon-separator {
+  width: 1px;
+  height: 24px;
+  background: #334155;
+  margin: 0 4px;
+}
+
+/* CAD Main Viewport Area */
+.cad-workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Left Tools / Mode Tabs */
+.cad-left-rail {
+  width: 52px;
+  background: #0f172a;
+  border-right: 1px solid var(--cad-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 12px;
+}
+
+.rail-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rail-btn:hover, .rail-btn.active {
+  background: #1e293b;
+  color: #38bdf8;
+  border-color: #334155;
+}
+
+/* Center CAD Canvas Stage */
+.cad-canvas-viewport {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #0b1120;
+  position: relative;
+  overflow: auto;
+}
+
+/* Rulers */
+.ruler-corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 24px;
+  background: #0f172a;
+  border-right: 1px solid #334155;
+  border-bottom: 1px solid #334155;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #64748b;
+  font-weight: bold;
+}
+
+.ruler-top-bar {
+  position: absolute;
+  top: 0;
+  left: 30px;
+  right: 0;
+  height: 24px;
+  background: #0f172a;
+  border-bottom: 1px solid #334155;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.ruler-left-bar {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  bottom: 0;
+  width: 30px;
+  background: #0f172a;
+  border-right: 1px solid #334155;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.ruler-tick-top {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  background: #475569;
+}
+
+.ruler-num-top {
+  position: absolute;
+  top: 2px;
+  font-size: 9px;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+.ruler-tick-left {
+  position: absolute;
+  right: 0;
+  height: 1px;
+  background: #475569;
+}
+
+.ruler-num-left {
+  position: absolute;
+  left: 4px;
+  font-size: 9px;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+/* Mouse crosshairs */
+.ruler-crosshair-x {
+  position: absolute;
+  top: 24px;
+  bottom: 0;
+  width: 1px;
+  background: rgba(56, 189, 248, 0.4);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.ruler-crosshair-y {
+  position: absolute;
+  left: 30px;
+  right: 0;
+  height: 1px;
+  background: rgba(56, 189, 248, 0.4);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* CAD Drawing Canvas Stage */
+.cad-canvas-container {
+  margin: auto;
+  padding: 60px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.cad-canvas-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  filter: drop-shadow(0 15px 35px rgba(0,0,0,0.5));
+}
+
+/* The Printable White Tag Area */
+.cad-printable-stage {
+  background: #ffffff;
+  color: #000000;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 18.9px 18.9px; /* 5mm grid at 3.5x zoom */
+}
+
+/* The Dumbbell Tail Extension (Right Gray Tone Non-Printable Edge) */
+.cad-tail-stage {
+  background: #cbd5e1;
+  border: 1.5px dashed #64748b;
+  border-left: none;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  box-sizing: border-box;
+  position: relative;
+  opacity: 0.9;
+}
+
+/* Individual Drag & Drop Elements */
+.cad-element {
+  position: absolute;
+  cursor: move;
+  box-sizing: border-box;
+  transition: box-shadow 0.1s;
+  user-select: none;
+}
+
+.cad-element.selected {
+  outline: 2px solid #2563eb !important;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4) !important;
+  z-index: 100 !important;
+}
+
+/* 8 Resize Handles */
+.cad-handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #2563eb;
+  border: 1.5px solid #ffffff;
+  border-radius: 1px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  z-index: 101;
+}
+
+.cad-handle.nw { top: -4px; left: -4px; cursor: nwse-resize; }
+.cad-handle.n  { top: -4px; left: calc(50% - 4px); cursor: ns-resize; }
+.cad-handle.ne { top: -4px; right: -4px; cursor: nesw-resize; }
+.cad-handle.e  { top: calc(50% - 4px); right: -4px; cursor: ew-resize; }
+.cad-handle.se { bottom: -4px; right: -4px; cursor: nwse-resize; }
+.cad-handle.s  { bottom: -4px; left: calc(50% - 4px); cursor: ns-resize; }
+.cad-handle.sw { bottom: -4px; left: -4px; cursor: nesw-resize; }
+.cad-handle.w  { top: calc(50% - 4px); left: -4px; cursor: ew-resize; }
+
+.cad-dimension-badge {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #38bdf8;
+  font-size: 10px;
+  font-family: monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  border: 1px solid #334155;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Right Property Inspector Panel */
+.cad-inspector-panel {
+  width: 340px;
+  flex-shrink: 0;
+  background: #0f172a;
+  border-left: 1px solid var(--cad-border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding: 16px;
+  z-index: 20;
+}
+
+.inspector-card {
+  background: #1e293b;
+  border-radius: 8px;
+  border: 1px solid var(--cad-border);
+  padding: 14px;
+}
+
+.inspector-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.inspector-subtitle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 14px 0 8px 0;
+  border-top: 1px solid #334155;
+  padding-top: 10px;
+}
+
+.cad-input {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #ffffff;
+  padding: 7px 10px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.cad-input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.cad-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  cursor: pointer;
+  margin: 6px 0;
+}
+
+/* Modals */
+.cad-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 17, 32, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.cad-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cad-modal-box {
+  background: #0f172a;
+  border: 1px solid var(--cad-border);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 580px;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+.cad-modal-header {
+  padding: 14px 20px;
+  background: #1e293b;
+  border-bottom: 1px solid var(--cad-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cad-modal-header h3 {
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+.cad-modal-body {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.cad-modal-footer {
+  padding: 12px 20px;
+  background: #1e293b;
+  border-top: 1px solid var(--cad-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Toast */
+.cad-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1e293b;
+  color: #ffffff;
+  border: 1px solid #38bdf8;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  z-index: 2000;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   PRINT ENGINE MEDIA QUERY
+   ========================================================================== */
+#print-stage {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 0 !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    width: 100% !important;
+    height: 100% !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .cad-header,
+  .cad-ribbon,
+  .cad-workspace,
+  .cad-modal-overlay {
+    display: none !important;
+  }
+
+  #print-stage {
+    display: block !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .print-label-item {
+    display: block !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  svg rect, svg path, svg text {
+    fill: #000000 !important;
+    shape-rendering: crispEdges !important;
+  }
+}

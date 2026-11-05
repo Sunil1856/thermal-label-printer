@@ -1,0 +1,764 @@
+/* ==========================================================================
+   ThermalPrint Pro - Styling & Thermal Print Engine (English UI)
+   ========================================================================== */
+
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --success: #16a34a;
+  --success-hover: #15803d;
+  --danger: #dc2626;
+  --bg-main: #0f172a;
+  --bg-surface: #ffffff;
+  --bg-card: #1e293b;
+  --border-color: #334155;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --label-w-mm: 81mm;
+  --label-h-mm: 12mm;
+  --printable-w-mm: 55mm;
+  --tail-w-mm: 26mm;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* App Header */
+.app-header {
+  background: #0f172a;
+  color: #ffffff;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid #1e293b;
+  z-index: 20;
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brand-badge {
+  background: linear-gradient(135deg, #2563eb, #38bdf8);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* App Layout */
+.app-container {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+/* Sidebar Editor Controls */
+.editor-sidebar {
+  width: 440px;
+  background: #ffffff;
+  border-right: 1px solid #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  z-index: 10;
+}
+
+.sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid #cbd5e1;
+  background: #f8fafc;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 13px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: #ffffff;
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+/* Control Sections */
+.control-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.control-section:hover {
+  border-color: #cbd5e1;
+}
+
+.section-header {
+  padding: 11px 16px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.section-header h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-body {
+  padding: 14px 16px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 8px 11px;
+  font-size: 0.85rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 6px;
+  user-select: none;
+}
+
+.toggle-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Workspace Preview Area */
+.workspace-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #cbd5e1;
+  overflow: hidden;
+  position: relative;
+}
+
+.workspace-toolbar {
+  background: #ffffff;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #cbd5e1;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+}
+.btn-success:hover {
+  background: var(--success-hover);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+.btn-secondary:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+.btn-danger:hover {
+  background: #fecaca;
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 0.8rem;
+}
+
+/* Canvas Viewport */
+.canvas-viewport {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+  background-image: 
+    radial-gradient(#94a3b8 1.5px, transparent 1.5px),
+    radial-gradient(#94a3b8 1.5px, #e2e8f0 1.5px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+.stage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.dimension-pill {
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* PHYSICAL THERMAL STICKER WRAPPER */
+.thermal-sticker-preview {
+  position: relative;
+  transform-origin: center center;
+  user-select: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+/* Dumbbell Tag Container (Exact match to Spectacles Tag) */
+.dumbbell-wrapper {
+  display: flex;
+  align-items: center;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.18));
+}
+
+.dumbbell-head {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.dumbbell-tail {
+  background: #ffffff;
+  border-top: 1px dashed #94a3b8;
+  border-bottom: 1px dashed #94a3b8;
+  border-right: 1px solid #94a3b8;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Inner Sticker Content */
+.label-inner {
+  width: 100%;
+  height: 100%;
+  padding: 1.2mm 2mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  font-family: Arial, -apple-system, sans-serif;
+  color: #000000;
+  line-height: 1.1;
+  background: #ffffff;
+}
+
+.label-inner.has-border {
+  border: 1px solid #000000;
+}
+
+/* ==========================================================================
+   LAYOUT MODES:
+   1. Two-Column Layout (Optical / Jewellery Dumbbell Tag - SPECS BUDDY style)
+   2. Stacked Layout (Standard Rectangular Tags)
+   ========================================================================== */
+
+/* 1. Two-Column Optical Tag Layout */
+.layout-two-column {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  gap: 1.5mm;
+  padding: 0.8mm 1.5mm;
+}
+
+.col-left {
+  flex: 1.15;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  line-height: 1.15;
+}
+
+.col-right {
+  flex: 1.1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.col-left .lbl-store-name {
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+
+.col-left .lbl-product-name {
+  font-weight: 700;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.3mm;
+}
+
+.col-left .lbl-price-val {
+  font-weight: 900;
+  color: #000000;
+  margin-top: 0.4mm;
+  letter-spacing: 0.02em;
+}
+
+.col-right .barcode-svg-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.col-right .barcode-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 2. Stacked Standard Layout */
+.layout-stacked {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.5mm 2mm;
+}
+
+.lbl-header {
+  text-align: center;
+  border-bottom: 1px dashed #000000;
+  padding-bottom: 1mm;
+  margin-bottom: 1mm;
+}
+
+.lbl-header .lbl-store-name {
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lbl-product-name-stacked {
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 0.8mm;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.lbl-variant-stacked {
+  font-size: 7.5pt;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.8mm;
+}
+
+.lbl-price-row-stacked {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2.5mm;
+  margin: 0.8mm 0;
+}
+
+.lbl-mrp-group {
+  font-size: 8pt;
+  font-weight: 600;
+  color: #222222;
+}
+
+.lbl-mrp-val.strike {
+  text-decoration: line-through;
+}
+
+.lbl-discount-badge {
+  background: #000000;
+  color: #ffffff;
+  font-size: 7pt;
+  font-weight: 800;
+  padding: 0.6mm 1.8mm;
+  border-radius: 2px;
+  display: inline-block;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.lbl-barcode-container-stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1mm 0;
+  width: 100%;
+}
+
+.lbl-meta-row-stacked {
+  display: flex;
+  justify-content: space-between;
+  font-size: 6.5pt;
+  font-weight: 600;
+  margin-top: 0.5mm;
+  border-top: 1px dotted #000000;
+  padding-top: 0.6mm;
+}
+
+/* Batch Table */
+.batch-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  padding: 16px;
+}
+
+.batch-table-wrapper {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+.batch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.batch-table th {
+  background: #f8fafc;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.batch-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.batch-table input {
+  padding: 5px 8px;
+  font-size: 0.82rem;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  background: #ffffff;
+  width: 90%;
+  max-width: 580px;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.25);
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 16px 20px;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 12px 20px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.guide-step {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.step-content h4 {
+  font-size: 0.9rem;
+  color: #0f172a;
+  margin-bottom: 3px;
+}
+
+.step-content p {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   THERMAL PRINT ENGINE
+   ========================================================================== */
+#print-stage {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 0 !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    width: 100% !important;
+    height: 100% !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .app-header,
+  .app-container,
+  .modal-overlay,
+  .workspace-area,
+  .editor-sidebar {
+    display: none !important;
+  }
+
+  #print-stage {
+    display: block !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .print-label-item {
+    display: block !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    break-after: page !important;
+    break-inside: avoid !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .print-label-item:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  svg rect, svg path, svg text {
+    fill: #000000 !important;
+    shape-rendering: crispEdges !important;
+  }
+}
