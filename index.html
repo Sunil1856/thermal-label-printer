@@ -1097,30 +1097,43 @@
           });
       }
 
-      function executePrint() {
-        const copies = parseInt(document.getElementById("input-copies").value, 10) || 1;
+      function preparePrintStage(isTest) {
         const printStage = document.getElementById("print-stage");
+        if (!printStage || !studio) return;
         printStage.innerHTML = "";
 
-        // Check if currently on Batch View with items
-        const isBatchActive = document.getElementById("rail-btn-batch").classList.contains("active");
+        if (isTest) {
+          printStage.innerHTML = `
+            <div class="print-label-item" style="width:${studio.canvas.width}mm;height:${studio.canvas.height}mm;display:flex;align-items:center;justify-content:space-between;padding:1.5mm;box-sizing:border-box;border:1px solid #000;">
+              <div style="font-size:7pt;font-weight:bold;line-height:1.2;">
+                <div>CAD CALIBRATION</div>
+                <div style="font-size:6pt;">${studio.canvas.width}x${studio.canvas.height}mm</div>
+              </div>
+              <div>
+                ${BarcodeEngine.renderSVG("CODE128", "TEST-CAD", { height: 16, showText: true, fontSize: 7 })}
+              </div>
+            </div>
+          `;
+        } else {
+          const copies = parseInt(document.getElementById("input-copies")?.value, 10) || 1;
+          const isBatchActive = document.getElementById("rail-btn-batch")?.classList.contains("active");
 
-        if (isBatchActive && batchItems.length > 0) {
-          batchItems.forEach(item => {
-            const qty = parseInt(item.qty, 10) || 1;
-            const labelHtml = studio.buildPrintHtml(item);
-            for (let c = 0; c < qty; c++) {
+          if (isBatchActive && batchItems.length > 0) {
+            batchItems.forEach(item => {
+              const qty = parseInt(item.qty, 10) || 1;
+              const labelHtml = studio.buildPrintHtml(item);
+              for (let c = 0; c < qty; c++) {
+                printStage.innerHTML += labelHtml;
+              }
+            });
+          } else {
+            const labelHtml = studio.buildPrintHtml();
+            for (let i = 0; i < copies; i++) {
               printStage.innerHTML += labelHtml;
             }
-          });
-        } else {
-          const labelHtml = studio.buildPrintHtml();
-          for (let i = 0; i < copies; i++) {
-            printStage.innerHTML += labelHtml;
           }
         }
 
-        // Inject dynamic @page rule
         let styleTag = document.getElementById("dynamic-print-rule");
         if (!styleTag) {
           styleTag = document.createElement("style");
@@ -1133,34 +1146,28 @@
             margin: 0mm !important;
           }
         `;
+      }
 
+      function executePrint() {
+        preparePrintStage(false);
         setTimeout(() => window.print(), 100);
       }
 
       function executeTestPrint() {
-        const printStage = document.getElementById("print-stage");
-        printStage.innerHTML = `
-          <div class="print-label-item" style="width:${studio.canvas.width}mm;height:${studio.canvas.height}mm;display:flex;align-items:center;justify-content:space-between;padding:1.5mm;box-sizing:border-box;border:1px solid #000;">
-            <div style="font-size:7pt;font-weight:bold;line-height:1.2;">
-              <div>CAD CALIBRATION</div>
-              <div style="font-size:6pt;">${studio.canvas.width}x${studio.canvas.height}mm</div>
-            </div>
-            <div>
-              ${BarcodeEngine.renderSVG("CODE128", "TEST-CAD", { height: 16, showText: true, fontSize: 7 })}
-            </div>
-          </div>
-        `;
-
-        let styleTag = document.getElementById("dynamic-print-rule");
-        if (!styleTag) {
-          styleTag = document.createElement("style");
-          styleTag.id = "dynamic-print-rule";
-          document.head.appendChild(styleTag);
-        }
-        styleTag.textContent = `@page { size: ${studio.canvas.width}mm ${studio.canvas.height}mm !important; margin: 0mm !important; }`;
-
+        preparePrintStage(true);
         setTimeout(() => window.print(), 100);
       }
+
+      window.preparePrintStage = preparePrintStage;
+      window.executePrint = executePrint;
+      window.executeTestPrint = executeTestPrint;
+
+      window.addEventListener("beforeprint", () => {
+        const printStage = document.getElementById("print-stage");
+        if (printStage && !printStage.innerHTML.trim()) {
+          preparePrintStage(false);
+        }
+      });
 
       // Batch Table Handlers
       function renderBatchTable() {

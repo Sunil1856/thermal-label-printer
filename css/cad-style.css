@@ -554,21 +554,21 @@ body {
     margin: 0 !important;
   }
 
+  /* 1. COMPLETELY HIDE EVERYTHING in the page EXCEPT #print-stage */
+  body > *:not(#print-stage) {
+    display: none !important;
+  }
+
   html, body {
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
-    width: 100% !important;
-    height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-  }
-
-  .cad-header,
-  .cad-ribbon,
-  .cad-workspace,
-  .cad-modal-overlay {
-    display: none !important;
   }
 
   #print-stage {
@@ -577,6 +577,7 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
+    width: 100% !important;
   }
 
   .print-label-item {
@@ -586,12 +587,16 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    page-break-after: always !important;
-    break-after: page !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
     background: #ffffff !important;
     color: #000000 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ONLY break page between multiple items, NEVER after the last item! */
+  .print-label-item:not(:last-child) {
+    page-break-after: always !important;
+    break-after: page !important;
   }
 
   svg rect, svg path, svg text {
