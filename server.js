@@ -55,6 +55,83 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Projects Directory on Disk (C:\Users\sunil\Desktop\Thermal-Label-Printer\projects)
+  const PROJECTS_DIR = path.join(PUBLIC_DIR, 'projects');
+  if (!fs.existsSync(PROJECTS_DIR)) {
+    try { fs.mkdirSync(PROJECTS_DIR, { recursive: true }); } catch (e) {}
+  }
+
+  // API to list, save, and delete projects as physical JSON files on disk
+  if (reqPath === '/api/projects') {
+    if (req.method === 'GET') {
+      try {
+        const files = fs.readdirSync(PROJECTS_DIR).filter(f => f.endsWith('.json'));
+        const projects = {};
+        files.forEach(f => {
+          try {
+            const raw = fs.readFileSync(path.join(PROJECTS_DIR, f), 'utf8');
+            const data = JSON.parse(raw);
+            if (data && data.id) projects[data.id] = data;
+          } catch(e) {}
+        });
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+          'Access-Control-Allow-Origin': '*'
+        });
+        res.end(JSON.stringify(projects));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    }
+
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const project = JSON.parse(body);
+          if (!project.id) project.id = 'proj_' + Date.now();
+          const pFile = path.join(PROJECTS_DIR, `${project.id}.json`);
+          fs.writeFileSync(pFile, JSON.stringify(project, null, 2), 'utf8');
+          res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          });
+          res.end(JSON.stringify({ success: true, project }));
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+      return;
+    }
+
+    if (req.method === 'DELETE') {
+      try {
+        const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        const id = parsedUrl.searchParams.get('id');
+        if (id) {
+          const pFile = path.join(PROJECTS_DIR, `${id}.json`);
+          if (fs.existsSync(pFile)) {
+            fs.unlinkSync(pFile);
+          }
+        }
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        });
+        res.end(JSON.stringify({ success: true }));
+      } catch(err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    }
+  }
+
   if (reqPath === '/' || reqPath === '') {
     reqPath = '/index.html';
   }

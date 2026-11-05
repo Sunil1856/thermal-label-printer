@@ -517,10 +517,17 @@
           console.error("Storage error:", e);
         }
 
+        // Save physically as JSON file on server disk (C:\Users\sunil\Desktop\Thermal-Label-Printer\projects)
+        fetch("/api/projects", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(project)
+        }).catch(() => {});
+
         renderSavedProjectsList();
         populateTemplateDropdown();
         if (inputEl) inputEl.value = "";
-        showToast(`Design "${name}" saved successfully!`);
+        showToast(`Design "${name}" saved to Disk & Browser!`);
       }
 
       function deleteProject(id) {
@@ -530,6 +537,10 @@
           if (confirm(`Delete saved project "${name}"?`)) {
             delete projects[id];
             localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+
+            // Delete from server disk
+            fetch("/api/projects?id=" + encodeURIComponent(id), { method: "DELETE" }).catch(() => {});
+
             renderSavedProjectsList();
             populateTemplateDropdown();
             showToast(`Deleted "${name}"`);
@@ -702,6 +713,21 @@
         }
       }
 
+      function syncProjectsFromServer() {
+        fetch("/api/projects")
+          .then(r => r.json())
+          .then(serverProjects => {
+            if (serverProjects && typeof serverProjects === 'object') {
+              const localProjects = getSavedProjects();
+              const merged = Object.assign({}, localProjects, serverProjects);
+              localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(merged));
+              renderSavedProjectsList();
+              populateTemplateDropdown();
+            }
+          })
+          .catch(() => {});
+      }
+
       function initApp() {
         const stage = document.getElementById("cad-printable-stage");
         const inspector = document.getElementById("inspector-panel");
@@ -725,6 +751,9 @@
 
         // Check Network IP from server
         fetchNetworkInfo();
+
+        // Sync Saved Projects from Server Disk
+        syncProjectsFromServer();
 
         // Populate Template Dropdown with Presets & User Saved Projects
         populateTemplateDropdown();
