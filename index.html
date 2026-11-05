@@ -57,6 +57,190 @@
     </div>
   </header>
 
+  <!-- Professional Desktop Menubar -->
+  <nav class="cad-menubar" id="cad-menubar">
+    <!-- File Menu -->
+    <div class="menubar-item" data-menu="file">
+      <button class="menubar-btn">File</button>
+      <div class="menubar-dropdown">
+        <div class="menu-item-row" id="menu-file-new">
+          <span>📄 New Project...</span>
+          <span class="menu-shortcut">Ctrl+N</span>
+        </div>
+        <div class="menu-item-row" id="menu-file-open">
+          <span>📂 Open / My Projects...</span>
+          <span class="menu-shortcut">Ctrl+O</span>
+        </div>
+        <div class="menu-item-row" id="menu-file-save">
+          <span>💾 Save Project</span>
+          <span class="menu-shortcut">Ctrl+S</span>
+        </div>
+        <div class="menu-item-row" id="menu-file-save-master">
+          <span>⭐ Save as Master Default</span>
+          <span class="menu-shortcut">Lock</span>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item-row" id="menu-file-export">
+          <span>📤 Export Project (.json)</span>
+          <span class="menu-shortcut">Export</span>
+        </div>
+        <div class="menu-item-row" id="menu-file-import">
+          <span>📥 Import Project (.json)...</span>
+          <span class="menu-shortcut">Import</span>
+        </div>
+        <div class="menu-item-row" id="menu-file-download-zip">
+          <span>📦 Download Software / Backup (.zip)</span>
+          <span class="menu-shortcut">v1.9.0</span>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item-row" id="menu-file-print">
+          <span>🖨️ Print Labels...</span>
+          <span class="menu-shortcut">Ctrl+P</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout & Size Menu -->
+    <div class="menubar-item" data-menu="layout">
+      <button class="menubar-btn">Layout &amp; Size</button>
+      <div class="menubar-dropdown" style="min-width:320px;">
+        <div class="menu-item-row" id="menu-layout-studio" style="font-weight:bold;color:#38bdf8;">
+          <span>📐 Layout &amp; Working Area Studio...</span>
+          <span class="menu-shortcut">Editor</span>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-section-title">Predefined Tag Layouts:</div>
+        <div class="menu-item-row" id="menu-layout-specs-81">
+          <span>👓 Specs Buddy Dumbbell (81 × 12 mm)</span>
+          <span class="menu-shortcut">55+26mm</span>
+        </div>
+        <div class="menu-item-row" id="menu-layout-specs-91">
+          <span>👓 Specs Buddy Long Tail (91 × 12 mm)</span>
+          <span class="menu-shortcut">55+36mm</span>
+        </div>
+        <div class="menu-item-row" id="menu-layout-specs-55">
+          <span>🏷️ Optical Head Only (55 × 12 mm)</span>
+          <span class="menu-shortcut">55×12mm</span>
+        </div>
+        <div class="menu-item-row" id="menu-layout-jewelry">
+          <span>💍 Jewelry Dumbbell Tag (65 × 15 mm)</span>
+          <span class="menu-shortcut">40+25mm</span>
+        </div>
+        <div class="menu-item-row" id="menu-layout-barcode-50">
+          <span>📦 Standard Barcode Label (50 × 25 mm)</span>
+          <span class="menu-shortcut">Flat</span>
+        </div>
+        <div class="menu-item-row" id="menu-layout-apparel">
+          <span>🏷️ Garments / Apparel Tag (50 × 30 mm)</span>
+          <span class="menu-shortcut">Flat</span>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item-row" id="menu-layout-toggle-tail">
+          <span>✂️ Toggle Rat-Tail Loop (On / Off)</span>
+          <span class="menu-shortcut">Tail</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insert Menu -->
+    <div class="menubar-item" data-menu="insert">
+      <button class="menubar-btn">Insert</button>
+      <div class="menubar-dropdown">
+        <div class="menu-item-row" id="menu-insert-text">
+          <span>🔤 Add Text</span>
+          <span class="menu-shortcut">T</span>
+        </div>
+        <div class="menu-item-row" id="menu-insert-barcode">
+          <span>|||| Add Barcode 128</span>
+          <span class="menu-shortcut">Barcode</span>
+        </div>
+        <div class="menu-item-row" id="menu-insert-qr">
+          <span>▦ Add QR Code</span>
+          <span class="menu-shortcut">QR</span>
+        </div>
+        <div class="menu-item-row" id="menu-insert-line">
+          <span>─ Add Horizontal Line</span>
+          <span class="menu-shortcut">Line</span>
+        </div>
+        <div class="menu-item-row" id="menu-insert-rect">
+          <span>□ Add Box Frame</span>
+          <span class="menu-shortcut">Box</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Batch Menu -->
+    <div class="menubar-item" data-menu="batch">
+      <button class="menubar-btn">Batch Queue</button>
+      <div class="menubar-dropdown">
+        <div class="menu-item-row" id="menu-batch-open">
+          <span>📋 Open Multi-Item Batch List</span>
+          <span class="menu-shortcut">Queue</span>
+        </div>
+        <div class="menu-item-row" id="menu-batch-add-current">
+          <span>➕ Add Current Design to Queue</span>
+          <span class="menu-shortcut">Add</span>
+        </div>
+        <div class="menu-item-row" id="menu-batch-import-csv">
+          <span>📥 Import CSV File...</span>
+          <span class="menu-shortcut">Excel</span>
+        </div>
+        <div class="menu-item-row" id="menu-batch-sample-csv">
+          <span>📄 Download Sample CSV</span>
+          <span class="menu-shortcut">Sample</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Printer Menu -->
+    <div class="menubar-item" data-menu="printer">
+      <button class="menubar-btn">Printer &amp; Calibration</button>
+      <div class="menubar-dropdown">
+        <div class="menu-item-row" id="menu-printer-settings">
+          <span>⚙️ Printer Best Settings Guide</span>
+          <span class="menu-shortcut">Guide</span>
+        </div>
+        <div class="menu-item-row" id="menu-printer-test">
+          <span>🎯 Test Calibration Page</span>
+          <span class="menu-shortcut">1 Copy</span>
+        </div>
+        <div class="menu-item-row" id="menu-printer-print">
+          <span>🖨️ Execute Print Now</span>
+          <span class="menu-shortcut">Print</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Menu -->
+    <div class="menubar-item" data-menu="view">
+      <button class="menubar-btn">View</button>
+      <div class="menubar-dropdown">
+        <div class="menu-item-row" id="menu-view-zoomin">
+          <span>🔍 Zoom In</span>
+          <span class="menu-shortcut">+</span>
+        </div>
+        <div class="menu-item-row" id="menu-view-zoomout">
+          <span>🔍 Zoom Out</span>
+          <span class="menu-shortcut">-</span>
+        </div>
+        <div class="menu-item-row" id="menu-view-zoomreset">
+          <span>🔍 Reset Zoom (100%)</span>
+          <span class="menu-shortcut">100%</span>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-item-row" id="menu-view-snap-05">
+          <span>Snap: 0.5 mm</span>
+        </div>
+        <div class="menu-item-row" id="menu-view-snap-10">
+          <span>Snap: 1.0 mm</span>
+        </div>
+        <div class="menu-item-row" id="menu-view-snap-off">
+          <span>Snap: Off</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
   <!-- CAD Ribbon / Toolbar -->
   <div class="cad-ribbon">
     <!-- Left: Element Insertion Tools -->
@@ -116,6 +300,10 @@
 
       <button class="ribbon-btn" id="btn-new-project-ribbon" style="background:#4f46e5;border-color:#6366f1;color:#fff;font-weight:700;" title="Create a new tag project">
         ➕ New Project
+      </button>
+
+      <button class="ribbon-btn" id="btn-layout-studio-ribbon" style="background:#0284c7;border-color:#38bdf8;color:#fff;font-weight:700;" title="Configure Tag Size and Printable Working Area">
+        📐 Layout &amp; Size
       </button>
 
       <div class="ribbon-separator"></div>
@@ -439,6 +627,154 @@
       <div class="cad-modal-footer">
         <button class="ribbon-btn" id="btn-cancel-new-project" style="background:#334155;color:#e2e8f0;">Cancel</button>
         <button class="ribbon-btn" id="btn-confirm-new-project" style="background:#10b981;border-color:#10b981;color:#fff;font-weight:bold;padding:6px 18px;">🚀 Create Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Layout & Working Area Studio Modal -->
+  <div class="cad-modal-overlay" id="modal-layout-studio">
+    <div class="cad-modal-box" style="max-width: 860px;">
+      <div class="cad-modal-header" style="background:#0f172a;border-bottom:1px solid #334155;">
+        <div>
+          <h3 style="display:flex;align-items:center;gap:8px;font-size:1.1rem;color:#ffffff;margin:0;">
+            <span>📐</span> Layout &amp; Working Area Studio
+          </h3>
+          <p style="font-size:0.75rem;color:#94a3b8;margin:3px 0 0 0;">
+            Choose predefined tag sizes, customize dimensions, and interactively define your active printable working area.
+          </p>
+        </div>
+        <button id="btn-close-layout-modal" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;">&times;</button>
+      </div>
+      <div class="cad-modal-body" style="padding: 20px 24px;">
+        <div style="display:grid;grid-template-columns: 360px 1fr;gap:24px;align-items:start;">
+          <!-- Left: Controls & Inputs -->
+          <div>
+            <!-- Predefined Layout Presets -->
+            <div style="margin-bottom:14px;">
+              <label style="font-size:0.75rem;font-weight:700;color:#38bdf8;text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:6px;">
+                🏷️ Predefined Tag Layout:
+              </label>
+              <select id="layout-studio-preset" class="cad-input" style="font-size:0.85rem;padding:8px 10px;width:100%;">
+                <option value="specs_buddy_sample">👓 Specs Buddy Dumbbell Tag (81 × 12 mm)</option>
+                <option value="specs_buddy_91mm">👓 Specs Buddy Long Tail Tag (91 × 12 mm)</option>
+                <option value="specs_tag_head_only">🏷️ Optical Head Only (55 × 12 mm)</option>
+                <option value="jewelry_tag">💍 Jewelry Dumbbell Tag (65 × 15 mm)</option>
+                <option value="standard_label">📦 Standard Barcode Label (50 × 25 mm)</option>
+                <option value="apparel_tag">🏷️ Garments / Apparel Tag (50 × 30 mm)</option>
+                <option value="custom">✏️ Custom Layout Dimensions...</option>
+              </select>
+            </div>
+
+            <!-- Total Tag Dimensions -->
+            <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;margin-bottom:14px;">
+              <div style="font-size:0.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">
+                📏 Total Tag Dimensions:
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                  <label style="font-size:0.72rem;color:#cbd5e1;display:block;margin-bottom:4px;">Total Width (mm):</label>
+                  <input type="number" id="layout-studio-width" class="cad-input" value="81" min="15" max="300" step="1" style="width:100%;">
+                </div>
+                <div>
+                  <label style="font-size:0.72rem;color:#cbd5e1;display:block;margin-bottom:4px;">Height (mm):</label>
+                  <input type="number" id="layout-studio-height" class="cad-input" value="12" min="5" max="200" step="1" style="width:100%;">
+                </div>
+              </div>
+              <div style="margin-top:10px;">
+                <label class="cad-checkbox-label" style="font-size:0.8rem;color:#cbd5e1;">
+                  <input type="checkbox" id="layout-studio-is-dumbbell" checked>
+                  <span>Optical Dumbbell Tag (with Rat-Tail / Loop)</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Interactive Working Area Section -->
+            <div id="layout-studio-area-config" style="background:#0f172a;border:1px solid #3b82f6;border-radius:8px;padding:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:0.75rem;font-weight:700;color:#60a5fa;text-transform:uppercase;">
+                  🎯 Active Working Area:
+                </span>
+                <span id="layout-studio-area-badge" style="font-size:0.72rem;background:#1d4ed8;color:#fff;padding:2px 8px;border-radius:4px;font-family:monospace;font-weight:bold;">55.0 mm</span>
+              </div>
+              <p style="font-size:0.72rem;color:#94a3b8;margin-bottom:10px;line-height:1.4;">
+                Select kitne area par printing karni hai. Baaki bacha hissa frame par chipkane ka rat-tail banega.
+              </p>
+              
+              <div style="margin-bottom:10px;">
+                <input type="range" id="layout-studio-printable-slider" min="10" max="81" value="55" step="1" style="width:100%;cursor:pointer;">
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                  <label style="font-size:0.7rem;color:#cbd5e1;display:block;margin-bottom:3px;">Printable Head (mm):</label>
+                  <input type="number" id="layout-studio-printable-w" class="cad-input" value="55" min="10" max="81" step="1" style="width:100%;">
+                </div>
+                <div>
+                  <label style="font-size:0.7rem;color:#cbd5e1;display:block;margin-bottom:3px;">Gray Tail (mm):</label>
+                  <input type="number" id="layout-studio-tail-w" class="cad-input" value="26" min="0" max="81" step="1" style="width:100%;">
+                </div>
+              </div>
+
+              <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+                <button type="button" class="ribbon-btn" id="btn-layout-set-55" style="font-size:0.72rem;padding:3px 8px;">55mm Head</button>
+                <button type="button" class="ribbon-btn" id="btn-layout-set-full" style="font-size:0.72rem;padding:3px 8px;">100% Full Tag</button>
+                <button type="button" class="ribbon-btn" id="btn-layout-add-5" style="font-size:0.72rem;padding:3px 8px;">+5mm</button>
+                <button type="button" class="ribbon-btn" id="btn-layout-sub-5" style="font-size:0.72rem;padding:3px 8px;">-5mm</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Live Visual Area Preview -->
+          <div style="display:flex;flex-direction:column;justify-content:center;background:#090d16;border:1px solid #334155;border-radius:8px;padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <span style="font-size:0.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase;">
+                👁️ Live Visual Working Area:
+              </span>
+              <span style="font-size:0.72rem;color:#38bdf8;font-family:monospace;" id="layout-studio-ratio-text">55mm Head (68%) / 26mm Tail (32%)</span>
+            </div>
+
+            <!-- Visual Tag Simulation Container -->
+            <div style="background:#1e293b;border:2px dashed #475569;border-radius:6px;padding:18px 14px;display:flex;align-items:center;justify-content:center;min-height:160px;">
+              <!-- The Tag Preview Box -->
+              <div id="layout-preview-tag" style="display:flex;height:65px;width:100%;border-radius:4px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+                <!-- Active Printable Head Area -->
+                <div id="layout-preview-head" style="background:#ffffff;color:#000;display:flex;flex-direction:column;justify-content:center;padding:4px 8px;position:relative;border-right:2px solid #2563eb;transition:width 0.1s;width:67.9%;">
+                  <div style="font-size:0.6rem;font-weight:bold;color:#1e40af;text-transform:uppercase;display:flex;align-items:center;gap:4px;">
+                    <span style="width:6px;height:6px;background:#2563eb;border-radius:50%;display:inline-block;"></span>
+                    Active Printable Zone
+                  </div>
+                  <div style="font-size:0.75rem;font-weight:900;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    SPECS BUDDY Heavy Metal ₹1449
+                  </div>
+                  <div style="font-family:monospace;font-size:0.62rem;background:#f1f5f9;padding:1px 4px;border-radius:2px;display:inline-block;width:fit-content;margin-top:2px;">
+                    |||||| SB-02581
+                  </div>
+                  <span id="layout-preview-head-dim" style="position:absolute;bottom:2px;right:6px;font-size:0.6rem;color:#2563eb;font-weight:bold;">55 mm</span>
+                </div>
+                <!-- Non-Printable Tail Area -->
+                <div id="layout-preview-tail" style="background:#cbd5e1;border:1.5px dashed #64748b;border-left:none;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:4px;color:#475569;transition:width 0.1s;width:32.1%;">
+                  <span style="font-size:0.6rem;font-weight:700;text-align:center;line-height:1.2;">
+                    🔒 NON-PRINTABLE LOOP
+                  </span>
+                  <span id="layout-preview-tail-dim" style="font-size:0.62rem;font-weight:bold;margin-top:2px;">26 mm</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Summary Badge -->
+            <div style="display:flex;justify-content:space-between;margin-top:14px;background:#1e293b;padding:10px 14px;border-radius:6px;font-size:0.75rem;">
+              <div>Total Tag: <strong id="layout-summary-total" style="color:#38bdf8;">81 × 12 mm</strong></div>
+              <div>Active Area: <strong id="layout-summary-print" style="color:#10b981;">55 mm</strong></div>
+              <div>Tail Loop: <strong id="layout-summary-tail" style="color:#cbd5e1;">26 mm</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cad-modal-footer">
+        <button class="ribbon-btn" id="btn-cancel-layout-studio" style="background:#334155;color:#e2e8f0;">Cancel</button>
+        <button class="ribbon-btn" id="btn-apply-layout-studio" style="background:#10b981;border-color:#10b981;color:#fff;font-weight:bold;padding:7px 20px;">
+          💾 Apply Layout &amp; Working Area
+        </button>
       </div>
     </div>
   </div>
@@ -856,6 +1192,7 @@
 
         // Initialize CAD Studio Engine
         studio = new (window.CadStudio || CadStudio)(stage, inspector);
+        window.studio = studio;
 
         // Check for Master Default layout first, then Auto-Saved design, then standard preset
         let initialTmpl = (window.CAD_PRESET_TEMPLATES && (window.CAD_PRESET_TEMPLATES.specs_buddy_sample || window.CAD_PRESET_TEMPLATES.specs_buddy_dumbbell)) || SAMPLE_SPECS_TAG;
@@ -1187,6 +1524,396 @@
         });
 
         initBatchEvents();
+        initMenubar();
+        initLayoutStudio();
+      }
+
+      function initMenubar() {
+        const menubar = document.getElementById("cad-menubar");
+        if (!menubar) return;
+
+        const items = menubar.querySelectorAll(".menubar-item");
+
+        function closeAllMenus() {
+          items.forEach(it => it.classList.remove("open"));
+        }
+
+        items.forEach(item => {
+          const btn = item.querySelector(".menubar-btn");
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const wasOpen = item.classList.contains("open");
+            closeAllMenus();
+            if (!wasOpen) {
+              item.classList.add("open");
+            }
+          });
+
+          item.addEventListener("mouseenter", () => {
+            const anyOpen = Array.from(items).some(it => it.classList.contains("open"));
+            if (anyOpen) {
+              closeAllMenus();
+              item.classList.add("open");
+            }
+          });
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest("#cad-menubar")) {
+            closeAllMenus();
+          }
+        });
+
+        // File Menu Handlers
+        document.getElementById("menu-file-new")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-new-project-ribbon")?.click();
+        });
+        document.getElementById("menu-file-open")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-my-projects-ribbon")?.click();
+        });
+        document.getElementById("menu-file-save")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-save-project-ribbon")?.click();
+        });
+        document.getElementById("menu-file-save-master")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-lock-master-layout")?.click();
+        });
+        document.getElementById("menu-file-export")?.addEventListener("click", () => {
+          closeAllMenus();
+          exportProjectJson(null);
+        });
+        document.getElementById("menu-file-import")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("input-import-project")?.click();
+        });
+        document.getElementById("menu-file-download-zip")?.addEventListener("click", () => {
+          closeAllMenus();
+          window.open("https://github.com/Sunil1856/thermal-label-printer/archive/refs/tags/v1.9.0.zip", "_blank");
+        });
+        document.getElementById("menu-file-print")?.addEventListener("click", () => {
+          closeAllMenus();
+          executePrint();
+        });
+
+        // Layout & Size Menu Handlers
+        document.getElementById("menu-layout-studio")?.addEventListener("click", () => {
+          closeAllMenus();
+          if (window.openLayoutStudio) window.openLayoutStudio();
+        });
+
+        function applyQuickLayout(w, h, printW, tailW, isDumbbell, label) {
+          studio.canvas.width = w;
+          studio.canvas.height = h;
+          studio.canvas.printableWidth = printW;
+          studio.canvas.tailWidth = tailW;
+          studio.canvas.isDumbbell = isDumbbell;
+          studio.render();
+          studio.updatePropertyInspector();
+          showToast(`📐 Applied Layout: ${label} (${w}×${h} mm)`);
+        }
+
+        document.getElementById("menu-layout-specs-81")?.addEventListener("click", () => {
+          closeAllMenus();
+          applyQuickLayout(81, 12, 55, 26, true, "Specs Buddy 81×12mm");
+        });
+        document.getElementById("menu-layout-specs-91")?.addEventListener("click", () => {
+          closeAllMenus();
+          applyQuickLayout(91, 12, 55, 36, true, "Specs Buddy 91×12mm Long Tail");
+        });
+        document.getElementById("menu-layout-specs-55")?.addEventListener("click", () => {
+          closeAllMenus();
+          applyQuickLayout(55, 12, 55, 0, false, "Optical Head Only 55×12mm");
+        });
+        document.getElementById("menu-layout-jewelry")?.addEventListener("click", () => {
+          closeAllMenus();
+          applyQuickLayout(65, 15, 40, 25, true, "Jewelry Dumbbell 65×15mm");
+        });
+        document.getElementById("menu-layout-barcode-50")?.addEventListener("click", () => {
+          closeAllMenus();
+          applyQuickLayout(50, 25, 50, 0, false, "Standard Barcode 50×25mm");
+        });
+        document.getElementById("menu-layout-apparel")?.addEventListener("click", () => {
+          closeAllMenus();
+          applyQuickLayout(50, 30, 50, 0, false, "Garments / Apparel 50×30mm");
+        });
+        document.getElementById("menu-layout-toggle-tail")?.addEventListener("click", () => {
+          closeAllMenus();
+          studio.canvas.isDumbbell = !studio.canvas.isDumbbell;
+          if (studio.canvas.isDumbbell && !studio.canvas.tailWidth) {
+            studio.canvas.tailWidth = Math.max(0, studio.canvas.width - studio.canvas.printableWidth) || 26;
+            studio.canvas.width = studio.canvas.printableWidth + studio.canvas.tailWidth;
+          }
+          studio.render();
+          studio.updatePropertyInspector();
+          showToast(studio.canvas.isDumbbell ? "✅ Rat-Tail Loop Enabled" : "ℹ️ Rat-Tail Loop Disabled (Flat Tag)");
+        });
+
+        // Insert Menu Handlers
+        document.getElementById("menu-insert-text")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-add-text")?.click();
+        });
+        document.getElementById("menu-insert-barcode")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-add-barcode")?.click();
+        });
+        document.getElementById("menu-insert-qr")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-add-qr")?.click();
+        });
+        document.getElementById("menu-insert-line")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-add-line")?.click();
+        });
+        document.getElementById("menu-insert-rect")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-add-rect")?.click();
+        });
+
+        // Batch Menu Handlers
+        document.getElementById("menu-batch-open")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("rail-btn-batch")?.click();
+        });
+        document.getElementById("menu-batch-add-current")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-batch-add-current")?.click();
+        });
+        document.getElementById("menu-batch-import-csv")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("input-import-csv")?.click();
+        });
+        document.getElementById("menu-batch-sample-csv")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-batch-sample-csv")?.click();
+        });
+
+        // Printer Menu Handlers
+        document.getElementById("menu-printer-settings")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-printer-guide")?.click();
+        });
+        document.getElementById("menu-printer-test")?.addEventListener("click", () => {
+          closeAllMenus();
+          executeTestPrint();
+        });
+        document.getElementById("menu-printer-print")?.addEventListener("click", () => {
+          closeAllMenus();
+          executePrint();
+        });
+
+        // View Menu Handlers
+        document.getElementById("menu-view-zoomin")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-zoom-in")?.click();
+        });
+        document.getElementById("menu-view-zoomout")?.addEventListener("click", () => {
+          closeAllMenus();
+          document.getElementById("btn-zoom-out")?.click();
+        });
+        document.getElementById("menu-view-zoomreset")?.addEventListener("click", () => {
+          closeAllMenus();
+          studio.zoom = 3.5;
+          document.getElementById("label-zoom").textContent = "350%";
+          studio.render();
+        });
+        document.getElementById("menu-view-snap-05")?.addEventListener("click", () => {
+          closeAllMenus();
+          studio.snapGrid = 0.5;
+          document.getElementById("select-ribbon-snap").value = "0.5";
+          showToast("Snap: 0.5 mm");
+        });
+        document.getElementById("menu-view-snap-10")?.addEventListener("click", () => {
+          closeAllMenus();
+          studio.snapGrid = 1.0;
+          document.getElementById("select-ribbon-snap").value = "1.0";
+          showToast("Snap: 1.0 mm");
+        });
+        document.getElementById("menu-view-snap-off")?.addEventListener("click", () => {
+          closeAllMenus();
+          studio.snapGrid = 0;
+          document.getElementById("select-ribbon-snap").value = "0";
+          showToast("Snap: Off");
+        });
+      }
+
+      function initLayoutStudio() {
+        const layoutModal = document.getElementById("modal-layout-studio");
+        if (!layoutModal) return;
+
+        const presetSel = document.getElementById("layout-studio-preset");
+        const totalWInput = document.getElementById("layout-studio-width");
+        const totalHInput = document.getElementById("layout-studio-height");
+        const isDumbbellCb = document.getElementById("layout-studio-is-dumbbell");
+        const slider = document.getElementById("layout-studio-printable-slider");
+        const printWInput = document.getElementById("layout-studio-printable-w");
+        const tailWInput = document.getElementById("layout-studio-tail-w");
+        const areaBadge = document.getElementById("layout-studio-area-badge");
+        const ratioText = document.getElementById("layout-studio-ratio-text");
+        const areaConfigBox = document.getElementById("layout-studio-area-config");
+
+        const previewHead = document.getElementById("layout-preview-head");
+        const previewTail = document.getElementById("layout-preview-tail");
+        const previewHeadDim = document.getElementById("layout-preview-head-dim");
+        const previewTailDim = document.getElementById("layout-preview-tail-dim");
+
+        const summaryTotal = document.getElementById("layout-summary-total");
+        const summaryPrint = document.getElementById("layout-summary-print");
+        const summaryTail = document.getElementById("layout-summary-tail");
+
+        function updateLayoutStudioPreview() {
+          const totalW = Math.max(15, parseFloat(totalWInput.value) || 81);
+          const totalH = Math.max(5, parseFloat(totalHInput.value) || 12);
+          const isDumbbell = isDumbbellCb.checked;
+
+          slider.max = totalW;
+          slider.min = 10;
+
+          let printW = Math.max(10, Math.min(totalW, parseFloat(printWInput.value) || 55));
+          if (!isDumbbell) {
+            printW = totalW;
+          }
+
+          let tailW = isDumbbell ? Math.max(0, totalW - printW) : 0;
+
+          printWInput.value = printW.toFixed(1);
+          tailWInput.value = tailW.toFixed(1);
+          slider.value = printW;
+
+          areaBadge.textContent = `${printW.toFixed(1)} mm`;
+          const headPct = ((printW / totalW) * 100).toFixed(1);
+          const tailPct = ((tailW / totalW) * 100).toFixed(1);
+
+          summaryTotal.textContent = `${totalW} × ${totalH} mm`;
+          summaryPrint.textContent = `${printW.toFixed(1)} mm`;
+          summaryTail.textContent = isDumbbell ? `${tailW.toFixed(1)} mm` : "None (Flat)";
+
+          if (isDumbbell) {
+            areaConfigBox.style.opacity = "1";
+            areaConfigBox.style.pointerEvents = "auto";
+            ratioText.textContent = `${printW.toFixed(0)}mm Head (${headPct}%) / ${tailW.toFixed(0)}mm Tail (${tailPct}%)`;
+            previewHead.style.width = `${headPct}%`;
+            previewTail.style.display = "flex";
+            previewTail.style.width = `${tailPct}%`;
+            previewHeadDim.textContent = `${printW.toFixed(1)} mm`;
+            previewTailDim.textContent = `${tailW.toFixed(1)} mm`;
+          } else {
+            areaConfigBox.style.opacity = "0.4";
+            areaConfigBox.style.pointerEvents = "none";
+            ratioText.textContent = `Full Tag Printable (${totalW} mm - 100%)`;
+            previewHead.style.width = "100%";
+            previewTail.style.display = "none";
+            previewHeadDim.textContent = `${totalW} mm`;
+          }
+        }
+
+        window.openLayoutStudio = function() {
+          if (!studio) return;
+          totalWInput.value = studio.canvas.width;
+          totalHInput.value = studio.canvas.height;
+          isDumbbellCb.checked = !!studio.canvas.isDumbbell;
+          printWInput.value = studio.canvas.printableWidth || (studio.canvas.isDumbbell ? 55 : studio.canvas.width);
+          tailWInput.value = studio.canvas.tailWidth || (studio.canvas.isDumbbell ? (studio.canvas.width - studio.canvas.printableWidth) : 0);
+          updateLayoutStudioPreview();
+          layoutModal.classList.add("active");
+        };
+
+        document.getElementById("btn-layout-studio-ribbon")?.addEventListener("click", openLayoutStudio);
+        document.getElementById("btn-close-layout-modal")?.addEventListener("click", () => layoutModal.classList.remove("active"));
+        document.getElementById("btn-cancel-layout-studio")?.addEventListener("click", () => layoutModal.classList.remove("active"));
+
+        presetSel.addEventListener("change", () => {
+          const val = presetSel.value;
+          if (val === "specs_buddy_sample") {
+            totalWInput.value = 81; totalHInput.value = 12; isDumbbellCb.checked = true; printWInput.value = 55;
+          } else if (val === "specs_buddy_91mm") {
+            totalWInput.value = 91; totalHInput.value = 12; isDumbbellCb.checked = true; printWInput.value = 55;
+          } else if (val === "specs_tag_head_only") {
+            totalWInput.value = 55; totalHInput.value = 12; isDumbbellCb.checked = false; printWInput.value = 55;
+          } else if (val === "jewelry_tag") {
+            totalWInput.value = 65; totalHInput.value = 15; isDumbbellCb.checked = true; printWInput.value = 40;
+          } else if (val === "standard_label") {
+            totalWInput.value = 50; totalHInput.value = 25; isDumbbellCb.checked = false; printWInput.value = 50;
+          } else if (val === "apparel_tag") {
+            totalWInput.value = 50; totalHInput.value = 30; isDumbbellCb.checked = false; printWInput.value = 50;
+          }
+          updateLayoutStudioPreview();
+        });
+
+        totalWInput.addEventListener("input", () => {
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+        totalHInput.addEventListener("input", () => {
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+        isDumbbellCb.addEventListener("change", () => {
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+
+        slider.addEventListener("input", () => {
+          printWInput.value = slider.value;
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+
+        printWInput.addEventListener("input", () => {
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+
+        tailWInput.addEventListener("input", () => {
+          const tw = parseFloat(tailWInput.value) || 0;
+          const tot = parseFloat(totalWInput.value) || 81;
+          printWInput.value = Math.max(10, tot - tw);
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+
+        document.getElementById("btn-layout-set-55")?.addEventListener("click", () => {
+          printWInput.value = 55;
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+        document.getElementById("btn-layout-set-full")?.addEventListener("click", () => {
+          isDumbbellCb.checked = false;
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+        document.getElementById("btn-layout-add-5")?.addEventListener("click", () => {
+          printWInput.value = Math.min(parseFloat(totalWInput.value) || 81, (parseFloat(printWInput.value) || 55) + 5);
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+        document.getElementById("btn-layout-sub-5")?.addEventListener("click", () => {
+          printWInput.value = Math.max(10, (parseFloat(printWInput.value) || 55) - 5);
+          presetSel.value = "custom";
+          updateLayoutStudioPreview();
+        });
+
+        document.getElementById("btn-apply-layout-studio")?.addEventListener("click", () => {
+          const totalW = Math.max(15, parseFloat(totalWInput.value) || 81);
+          const totalH = Math.max(5, parseFloat(totalHInput.value) || 12);
+          const isDumbbell = isDumbbellCb.checked;
+          const printW = isDumbbell ? Math.max(10, Math.min(totalW, parseFloat(printWInput.value) || 55)) : totalW;
+          const tailW = isDumbbell ? Math.max(0, totalW - printW) : 0;
+
+          studio.canvas.width = totalW;
+          studio.canvas.height = totalH;
+          studio.canvas.isDumbbell = isDumbbell;
+          studio.canvas.printableWidth = printW;
+          studio.canvas.tailWidth = tailW;
+
+          studio.render();
+          studio.updatePropertyInspector();
+          layoutModal.classList.remove("active");
+          showToast(`📐 Layout updated: ${totalW}×${totalH} mm (Active Area: ${printW} mm)`);
+        });
       }
 
       function fetchNetworkInfo() {

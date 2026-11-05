@@ -106,6 +106,107 @@ body {
   100% { transform: scale(0.95); opacity: 0.8; }
 }
 
+/* Professional Desktop Menu Bar */
+.cad-menubar {
+  height: 32px;
+  background: #090d16;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 0.8rem;
+  user-select: none;
+  position: relative;
+  z-index: 40;
+}
+
+.menubar-item {
+  position: relative;
+}
+
+.menubar-btn {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+}
+
+.menubar-btn:hover,
+.menubar-item.open .menubar-btn {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+.menubar-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 270px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
+  padding: 6px 0;
+  display: none;
+  z-index: 50;
+}
+
+.menubar-item.open .menubar-dropdown {
+  display: block;
+}
+
+.menu-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.12s;
+  text-decoration: none;
+  user-select: none;
+}
+
+.menu-item-row:hover {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.menu-item-row .menu-shortcut {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-family: monospace;
+  margin-left: 14px;
+}
+
+.menu-item-row:hover .menu-shortcut {
+  color: #dbeafe;
+}
+
+.menu-divider {
+  height: 1px;
+  background: #334155;
+  margin: 5px 0;
+}
+
+.menu-section-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 14px 2px 14px;
+}
+
 /* CAD Ribbon / Tools Toolbar */
 .cad-ribbon {
   height: 48px;

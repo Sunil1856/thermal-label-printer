@@ -550,6 +550,15 @@
         } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "d") {
           this.duplicateSelected();
           e.preventDefault();
+        } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+          e.preventDefault();
+          document.getElementById("btn-save-project-ribbon")?.click();
+        } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "o") {
+          e.preventDefault();
+          document.getElementById("btn-my-projects-ribbon")?.click();
+        } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "n") {
+          e.preventDefault();
+          document.getElementById("btn-new-project-ribbon")?.click();
         } else if (this.selectedId && ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
           const elem = this.elements.find(el => el.id === this.selectedId);
           if (!elem) return;
@@ -611,6 +620,9 @@
                 <button type="button" class="ribbon-btn" id="btn-tail-add-10" style="flex:1;font-size:0.75rem;padding:4px 6px;">+ 10mm Tail</button>
                 <button type="button" class="ribbon-btn" id="btn-tail-sub-10" style="flex:1;font-size:0.75rem;padding:4px 6px;">- 10mm Tail</button>
               </div>
+              <button type="button" class="ribbon-btn" id="btn-insp-open-layout" style="width:100%;margin-top:10px;background:#0284c7;color:#fff;font-weight:bold;font-size:0.75rem;padding:6px 8px;">
+                📐 Open Layout &amp; Working Area Studio...
+              </button>
             </div>
 
             <!-- Hardware Print Calibration Offset -->
@@ -698,6 +710,10 @@
             this.render();
             this.updatePropertyInspector();
           }
+        });
+
+        document.getElementById("btn-insp-open-layout")?.addEventListener("click", () => {
+          window.openLayoutStudio?.();
         });
 
         document.getElementById("insp-offset-x")?.addEventListener("change", (e) => {
