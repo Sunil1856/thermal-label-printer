@@ -560,6 +560,8 @@ body {
   }
 
   html, body {
+    display: block !important;
+    position: static !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
@@ -573,11 +575,12 @@ body {
 
   #print-stage {
     display: block !important;
-    position: static !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
-    width: 100% !important;
   }
 
   .print-label-item {
