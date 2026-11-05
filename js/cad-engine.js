@@ -1226,8 +1226,15 @@
     return escapeHtml(str);
   }
 
+  global.escapeHtml = escapeHtml;
   global.CadStudio = CadStudio;
-  if (typeof window !== 'undefined') window.CadStudio = CadStudio;
-  if (typeof globalThis !== 'undefined') globalThis.CadStudio = CadStudio;
+  if (typeof window !== 'undefined') {
+    window.escapeHtml = escapeHtml;
+    window.CadStudio = CadStudio;
+  }
+  if (typeof globalThis !== 'undefined') {
+    globalThis.escapeHtml = escapeHtml;
+    globalThis.CadStudio = CadStudio;
+  }
 
 })(typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : this));

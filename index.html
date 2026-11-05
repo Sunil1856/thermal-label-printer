@@ -409,6 +409,16 @@
     (function () {
       'use strict';
 
+      function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
       let studio = null;
       let batchItems = [
         { id: 1, name: "Heavy Metal Frame", barcode: "SB-02581", price: "1449", qty: 10 },
