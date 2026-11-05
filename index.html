@@ -93,6 +93,15 @@
           <span class="menu-shortcut">v1.9.0</span>
         </div>
         <div class="menu-divider"></div>
+        <div class="menu-item-row" id="menu-file-export-png">
+          <span>📷 Export as PNG Image...</span>
+          <span class="menu-shortcut">PNG</span>
+        </div>
+        <div class="menu-item-row" id="menu-file-export-svg">
+          <span>🎨 Export as Vector SVG...</span>
+          <span class="menu-shortcut">SVG</span>
+        </div>
+        <div class="menu-divider"></div>
         <div class="menu-item-row" id="menu-file-print">
           <span>🖨️ Print Labels...</span>
           <span class="menu-shortcut">Ctrl+P</span>
@@ -1268,6 +1277,7 @@
           if (pInp && price) pInp.value = price;
           if (bInp && barcode) bInp.value = barcode;
         }
+        window.syncQuickInputsFromCanvas = syncQuickInputsFromCanvas;
 
         document.getElementById("quick-input-model").addEventListener("input", function () {
           const val = this.value;
@@ -1593,6 +1603,14 @@
           closeAllMenus();
           window.open("https://github.com/Sunil1856/thermal-label-printer/archive/refs/tags/v1.9.0.zip", "_blank");
         });
+        document.getElementById("menu-file-export-png")?.addEventListener("click", () => {
+          closeAllMenus();
+          exportTagAsPng();
+        });
+        document.getElementById("menu-file-export-svg")?.addEventListener("click", () => {
+          closeAllMenus();
+          exportTagAsSvg();
+        });
         document.getElementById("menu-file-print")?.addEventListener("click", () => {
           closeAllMenus();
           executePrint();
@@ -1610,6 +1628,17 @@
           studio.canvas.printableWidth = printW;
           studio.canvas.tailWidth = tailW;
           studio.canvas.isDumbbell = isDumbbell;
+
+          // Auto-constrain elements within active area
+          studio.elements.forEach(el => {
+            if (el.x + el.w > printW) {
+              el.x = Math.max(0, parseFloat((printW - el.w).toFixed(2)));
+            }
+            if (el.y + el.h > h) {
+              el.y = Math.max(0, parseFloat((h - el.h).toFixed(2)));
+            }
+          });
+
           studio.render();
           studio.updatePropertyInspector();
           showToast(`📐 Applied Layout: ${label} (${w}×${h} mm)`);
@@ -1684,7 +1713,10 @@
         });
         document.getElementById("menu-batch-import-csv")?.addEventListener("click", () => {
           closeAllMenus();
-          document.getElementById("input-import-csv")?.click();
+          document.getElementById("rail-btn-batch")?.click();
+          setTimeout(() => {
+            document.getElementById("batch-csv-input")?.click();
+          }, 100);
         });
         document.getElementById("menu-batch-sample-csv")?.addEventListener("click", () => {
           closeAllMenus();
@@ -2076,7 +2108,125 @@
           a.click();
           URL.revokeObjectURL(url);
         });
+
+        const csvInp = document.getElementById("batch-csv-input");
+        if (csvInp) {
+          csvInp.addEventListener("change", function(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+              try {
+                const text = evt.target.result;
+                const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+                if (lines.length <= 1) {
+                  alert("CSV file seems empty or contains only a header.");
+                  return;
+                }
+                let count = 0;
+                const startIdx = (lines[0].toLowerCase().includes("model") || lines[0].toLowerCase().includes("name")) ? 1 : 0;
+                for (let i = startIdx; i < lines.length; i++) {
+                  const parts = lines[i].split(",").map(p => p.trim().replace(/^["']|["']$/g, ""));
+                  if (parts.length >= 1 && parts[0]) {
+                    batchItems.push({
+                      id: Date.now() + Math.random(),
+                      name: parts[0] || "Frame",
+                      barcode: parts[1] || ("SB-" + Math.floor(10000 + Math.random()*90000)),
+                      price: (parts[2] || "1449").replace(/[^0-9]/g, ""),
+                      qty: parseInt(parts[3], 10) || 5
+                    });
+                    count++;
+                  }
+                }
+                renderBatchTable();
+                showToast(`✅ Imported ${count} frames from CSV!`);
+              } catch(err) {
+                alert("Error parsing CSV: " + err.message);
+              }
+            };
+            reader.readAsText(file);
+            csvInp.value = "";
+          });
+        }
       }
+
+      function exportTagAsPng() {
+        if (!studio) return;
+        const c = studio.canvas;
+        const scale = 4;
+        const wPx = Math.round(studio.mmToCanvasPx(c.printableWidth) * (scale / studio.zoom));
+        const hPx = Math.round(studio.mmToCanvasPx(c.height) * (scale / studio.zoom));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = wPx;
+        canvas.height = hPx;
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, wPx, hPx);
+
+        const printHtml = studio.buildPrintHtml();
+        const svgData = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="${c.printableWidth}mm" height="${c.height}mm" viewBox="0 0 ${c.printableWidth} ${c.height}">
+            <foreignObject width="100%" height="100%">
+              <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;margin:0;padding:0;background:#ffffff;font-family:sans-serif;">
+                ${printHtml}
+              </div>
+            </foreignObject>
+          </svg>
+        `;
+
+        const img = new Image();
+        const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+
+        img.onload = function() {
+          ctx.drawImage(img, 0, 0, wPx, hPx);
+          URL.revokeObjectURL(url);
+          const a = document.createElement("a");
+          const modelElem = studio.elements.find(e => e.id.includes("model") || e.id.includes("frame"));
+          const name = (modelElem ? modelElem.content : "Label_Tag").replace(/[^a-zA-Z0-9_-]/g, "_");
+          a.download = `${name}_${c.printableWidth}x${c.height}mm.png`;
+          a.href = canvas.toDataURL("image/png");
+          a.click();
+          showToast("📷 Downloaded PNG image of tag!");
+        };
+        img.onerror = function() {
+          const a = document.createElement("a");
+          a.download = "tag_design.svg";
+          a.href = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
+          a.click();
+          showToast("Downloaded SVG vector of tag!");
+        };
+        img.src = url;
+      }
+
+      function exportTagAsSvg() {
+        if (!studio) return;
+        const c = studio.canvas;
+        const printHtml = studio.buildPrintHtml();
+        const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${c.printableWidth}mm" height="${c.height}mm" viewBox="0 0 ${c.printableWidth} ${c.height}">
+  <rect width="100%" height="100%" fill="#ffffff" stroke="#000000" stroke-width="0.1"/>
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;margin:0;padding:0;">
+      ${printHtml}
+    </div>
+  </foreignObject>
+</svg>`;
+        const blob = new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const modelElem = studio.elements.find(e => e.id.includes("model") || e.id.includes("frame"));
+        const name = (modelElem ? modelElem.content : "Label_Tag").replace(/[^a-zA-Z0-9_-]/g, "_");
+        a.download = `${name}_${c.printableWidth}x${c.height}mm.svg`;
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("🎨 Downloaded Vector SVG!");
+      }
+      window.exportTagAsPng = exportTagAsPng;
+      window.exportTagAsSvg = exportTagAsSvg;
 
       function showToast(msg) {
         let toast = document.getElementById("cad-toast");

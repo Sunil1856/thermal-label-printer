@@ -1,7 +1,7 @@
 {
   "id": "master_default",
   "name": "⭐ Master Layout (Ultra Light Frame)",
-  "savedAt": "06/11/2026 00:04",
+  "savedAt": "06/11/2026 01:18",
   "canvas": {
     "width": 81,
     "height": 12,
@@ -93,7 +93,7 @@
       "rotation": 0
     },
     {
-      "id": "elem_1793903510032_378",
+      "id": "elem_1793908082428_454",
       "type": "text",
       "x": 4,
       "y": 2,
@@ -109,7 +109,7 @@
       "textDecoration": "none"
     },
     {
-      "id": "elem_1793903510049_350",
+      "id": "elem_1793908082436_184",
       "type": "barcode",
       "x": 4,
       "y": 2,
@@ -117,7 +117,7 @@
       "h": 9,
       "rotation": 0,
       "codeType": "CODE128",
-      "codeValue": "SB-58062",
+      "codeValue": "SB-35562",
       "barcodeText": "SB-02581",
       "showText": true,
       "fontSize": 7.5,
@@ -130,7 +130,7 @@
       "fontFamily": "'Courier New', Courier, monospace"
     },
     {
-      "id": "elem_1793903510056_761",
+      "id": "elem_1793908082443_76",
       "type": "qrcode",
       "x": 4,
       "y": 2,
@@ -140,65 +140,7 @@
       "codeValue": "https://specsbuddy.in"
     },
     {
-      "id": "elem_1793903510072_256",
-      "type": "line",
-      "x": 4,
-      "y": 2,
-      "w": 25,
-      "h": 0.5,
-      "rotation": 0,
-      "lineStyle": "solid",
-      "thickness": 0.3
-    },
-    {
-      "id": "elem_1793903659147_950",
-      "type": "text",
-      "x": 4,
-      "y": 2,
-      "w": 20,
-      "h": 3.5,
-      "rotation": 0,
-      "content": "New Text",
-      "fontSize": 8.5,
-      "fontWeight": "bold",
-      "fontFamily": "Arial",
-      "textAlign": "left",
-      "verticalAlign": "middle",
-      "textDecoration": "none"
-    },
-    {
-      "id": "elem_1793903659169_469",
-      "type": "barcode",
-      "x": 4,
-      "y": 2,
-      "w": 25,
-      "h": 9,
-      "rotation": 0,
-      "codeType": "CODE128",
-      "codeValue": "SB-65248",
-      "barcodeText": "SB-02581",
-      "showText": true,
-      "fontSize": 7.5,
-      "barHeight": 6.5,
-      "textGap": 1,
-      "moduleWidth": 1.2,
-      "stretch": true,
-      "textAlign": "center",
-      "fontWeight": "bold",
-      "fontFamily": "'Courier New', Courier, monospace"
-    },
-    {
-      "id": "elem_1793903659175_166",
-      "type": "qrcode",
-      "x": 4,
-      "y": 2,
-      "w": 8,
-      "h": 8,
-      "rotation": 0,
-      "codeValue": "https://specsbuddy.in"
-    },
-    {
-      "id": "elem_1793903659182_582",
+      "id": "elem_1793908082465_767",
       "type": "line",
       "x": 4,
       "y": 2,

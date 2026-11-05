@@ -194,10 +194,46 @@
       this.pushHistory();
       const dup = JSON.parse(JSON.stringify(target));
       dup.id = "elem_" + Date.now();
-      dup.x += 2.0;
-      dup.y += 2.0;
+      const maxW = this.canvas.printableWidth || this.canvas.width;
+      const maxH = this.canvas.height;
+      dup.x = Math.min(dup.x + 1.5, Math.max(0, maxW - dup.w));
+      dup.y = Math.min(dup.y + 1.0, Math.max(0, maxH - dup.h));
       this.elements.push(dup);
       this.selectedId = dup.id;
+      this.render();
+      this.updatePropertyInspector();
+    }
+
+    alignSelected(type) {
+      if (!this.selectedId) return;
+      const elem = this.elements.find(e => e.id === this.selectedId);
+      if (!elem) return;
+      this.pushHistory();
+
+      const printW = this.canvas.printableWidth || this.canvas.width;
+      const printH = this.canvas.height;
+
+      switch (type) {
+        case "left":
+          elem.x = 0.5;
+          break;
+        case "center-h":
+          elem.x = parseFloat(Math.max(0, (printW - elem.w) / 2).toFixed(2));
+          break;
+        case "right":
+          elem.x = parseFloat(Math.max(0, printW - elem.w - 0.5).toFixed(2));
+          break;
+        case "top":
+          elem.y = 0.5;
+          break;
+        case "center-v":
+          elem.y = parseFloat(Math.max(0, (printH - elem.h) / 2).toFixed(2));
+          break;
+        case "bottom":
+          elem.y = parseFloat(Math.max(0, printH - elem.h - 0.5).toFixed(2));
+          break;
+      }
+
       this.render();
       this.updatePropertyInspector();
     }
@@ -434,7 +470,9 @@
         const mmY = this.canvasPxToMm(mouseY);
         const coordsBadge = document.getElementById("cad-coords-badge");
         if (coordsBadge) {
-          coordsBadge.textContent = `X: ${Math.max(0, mmX).toFixed(1)} mm | Y: ${Math.max(0, mmY).toFixed(1)} mm`;
+          const selElem = this.elements.find(el => el.id === this.selectedId);
+          const selText = selElem ? ` | 🎯 ${selElem.type.toUpperCase()}: ${selElem.w.toFixed(1)}×${selElem.h.toFixed(1)}mm` : "";
+          coordsBadge.textContent = `📍 X: ${Math.max(0, mmX).toFixed(1)} mm | Y: ${Math.max(0, mmY).toFixed(1)} mm | 📐 Active: ${this.canvas.printableWidth}×${this.canvas.height}mm${selText}`;
         }
       });
 
@@ -562,11 +600,17 @@
         } else if (this.selectedId && ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
           const elem = this.elements.find(el => el.id === this.selectedId);
           if (!elem) return;
-          const step = e.shiftKey ? 1.0 : 0.2;
-          if (e.key === "ArrowLeft") elem.x -= step;
-          if (e.key === "ArrowRight") elem.x += step;
-          if (e.key === "ArrowUp") elem.y -= step;
-          if (e.key === "ArrowDown") elem.y += step;
+          let step = 0.2;
+          if (e.shiftKey) step = 1.0;
+          else if (e.altKey) step = 0.05;
+
+          const maxW = this.canvas.printableWidth || this.canvas.width;
+          const maxH = this.canvas.height;
+
+          if (e.key === "ArrowLeft") elem.x = Math.max(0, parseFloat((elem.x - step).toFixed(2)));
+          if (e.key === "ArrowRight") elem.x = Math.min(Math.max(0, maxW - elem.w), parseFloat((elem.x + step).toFixed(2)));
+          if (e.key === "ArrowUp") elem.y = Math.max(0, parseFloat((elem.y - step).toFixed(2)));
+          if (e.key === "ArrowDown") elem.y = Math.min(Math.max(0, maxH - elem.h), parseFloat((elem.y + step).toFixed(2)));
           this.render();
           this.updatePropertyInspector();
           e.preventDefault();
@@ -755,7 +799,11 @@
           <div class="form-row">
             <div class="form-group">
               <label>Font Size (pt)</label>
-              <input type="number" id="elem-font-size" class="cad-input" value="${elem.fontSize}" step="0.5">
+              <div style="display:flex;gap:4px;">
+                <button type="button" class="ribbon-btn" id="btn-font-sub" style="padding:4px 8px;font-weight:bold;" title="Decrease font size">-</button>
+                <input type="number" id="elem-font-size" class="cad-input" value="${elem.fontSize}" step="0.5" style="flex:1;">
+                <button type="button" class="ribbon-btn" id="btn-font-add" style="padding:4px 8px;font-weight:bold;" title="Increase font size">+</button>
+              </div>
             </div>
             <div class="form-group">
               <label>Font Weight</label>
@@ -942,6 +990,17 @@
             </select>
           </div>
 
+          <!-- Quick Alignment Tools -->
+          <div class="inspector-subtitle">⚡ Quick Alignment (Active Area: ${(this.canvas.printableWidth || this.canvas.width).toFixed(0)} mm)</div>
+          <div style="display:grid;grid-template-columns: repeat(3, 1fr);gap:5px;margin-bottom:12px;">
+            <button type="button" class="ribbon-btn btn-align-action" data-align="left" title="Align to Left edge">⬅️ Left</button>
+            <button type="button" class="ribbon-btn btn-align-action" data-align="center-h" title="Center Horizontally in Printable Area">↔️ Center</button>
+            <button type="button" class="ribbon-btn btn-align-action" data-align="right" title="Align to Right edge">➡️ Right</button>
+            <button type="button" class="ribbon-btn btn-align-action" data-align="top" title="Align to Top edge">⬆️ Top</button>
+            <button type="button" class="ribbon-btn btn-align-action" data-align="center-v" title="Center Vertically">↕️ Middle</button>
+            <button type="button" class="ribbon-btn btn-align-action" data-align="bottom" title="Align to Bottom edge">⬇️ Bottom</button>
+          </div>
+
           <div style="display:flex;gap:6px;margin-top:14px;">
             <button class="ribbon-btn" id="btn-cad-dup" style="flex:1;">📋 Duplicate</button>
             <button class="ribbon-btn" id="btn-cad-del" style="flex:1;color:#ef4444;border-color:#ef4444;">🗑️ Delete</button>
@@ -953,10 +1012,30 @@
         </div>
       `;
 
+      // Quick Alignment Click Events
+      panel.querySelectorAll(".btn-align-action").forEach(btn => {
+        btn.addEventListener("click", () => {
+          this.alignSelected(btn.getAttribute("data-align"));
+        });
+      });
+
+      // Font Size Increment/Decrement Buttons
+      document.getElementById("btn-font-sub")?.addEventListener("click", () => {
+        elem.fontSize = Math.max(4, parseFloat((elem.fontSize - 0.5).toFixed(1)));
+        this.render();
+        this.updatePropertyInspector();
+      });
+      document.getElementById("btn-font-add")?.addEventListener("click", () => {
+        elem.fontSize = Math.min(72, parseFloat((elem.fontSize + 0.5).toFixed(1)));
+        this.render();
+        this.updatePropertyInspector();
+      });
+
       // Text Events
       document.getElementById("elem-content")?.addEventListener("input", (e) => {
         elem.content = e.target.value;
         this.render();
+        window.syncQuickInputsFromCanvas?.();
       });
       document.getElementById("elem-font-size")?.addEventListener("input", (e) => {
         elem.fontSize = parseFloat(e.target.value) || 8;
@@ -1019,6 +1098,7 @@
           sepText.content = e.target.value;
         }
         this.render();
+        window.syncQuickInputsFromCanvas?.();
       });
       document.getElementById("elem-barcode-text")?.addEventListener("input", (e) => {
         elem.barcodeText = e.target.value;
