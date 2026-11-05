@@ -114,6 +114,10 @@
         📁 My Projects
       </button>
 
+      <button class="ribbon-btn" id="btn-new-project-ribbon" style="background:#4f46e5;border-color:#6366f1;color:#fff;font-weight:700;" title="Create a new tag project">
+        ➕ New Project
+      </button>
+
       <div class="ribbon-separator"></div>
 
       <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Template:</span>
@@ -391,6 +395,50 @@
       </div>
       <div class="cad-modal-footer">
         <button class="ribbon-btn" id="btn-close-projects-done" style="background:#2563eb;color:#fff;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create New Project Modal -->
+  <div class="cad-modal-overlay" id="modal-new-project">
+    <div class="cad-modal-box" style="max-width:520px;">
+      <div class="cad-modal-header">
+        <h3>➕ Create New Tag Project</h3>
+        <button id="btn-close-new-project-modal" style="background:none;border:none;color:#fff;font-size:1.4rem;cursor:pointer;">&times;</button>
+      </div>
+      <div class="cad-modal-body">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-size:0.8rem;color:#94a3b8;font-weight:bold;margin-bottom:6px;display:block;">Project / Frame Name:</label>
+          <input type="text" id="new-project-name" class="cad-input" placeholder="e.g., Rimless Titanium Frame" style="font-size:0.9rem;padding:8px 12px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-size:0.8rem;color:#94a3b8;font-weight:bold;margin-bottom:6px;display:block;">Tag Type &amp; Size:</label>
+          <select id="new-project-preset" class="cad-input" style="font-size:0.85rem;padding:8px 12px;">
+            <option value="specs_buddy_sample">👓 Specs Buddy Dumbbell Tag (81 × 12 mm) [Recommended]</option>
+            <option value="specs_buddy_91mm">👓 Specs Buddy Long Tail Tag (91 × 12 mm)</option>
+            <option value="specs_tag_head_only">🏷️ Optical Head Only (55 × 12 mm)</option>
+            <option value="blank_tag">📄 Clean Blank Tag (81 × 12 mm)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label style="font-size:0.8rem;color:#94a3b8;font-weight:bold;margin-bottom:6px;display:block;">Initial Setup:</label>
+          <div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#e2e8f0;cursor:pointer;">
+              <input type="radio" name="new-project-mode" value="clone" checked>
+              <span>Keep standard layout (Brand, Model, Price &amp; Barcode pre-arranged)</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:#e2e8f0;cursor:pointer;">
+              <input type="radio" name="new-project-mode" value="blank">
+              <span>Start completely blank (Design from scratch)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="cad-modal-footer">
+        <button class="ribbon-btn" id="btn-cancel-new-project" style="background:#334155;color:#e2e8f0;">Cancel</button>
+        <button class="ribbon-btn" id="btn-confirm-new-project" style="background:#10b981;border-color:#10b981;color:#fff;font-weight:bold;padding:6px 18px;">🚀 Create Project</button>
       </div>
     </div>
   </div>
@@ -986,6 +1034,67 @@
             importProjectJson(e.target.files[0]);
             e.target.value = "";
           }
+        });
+
+        // New Project Modal Events
+        const newProjectModal = document.getElementById("modal-new-project");
+        document.getElementById("btn-new-project-ribbon").addEventListener("click", () => {
+          const inputEl = document.getElementById("new-project-name");
+          if (inputEl) inputEl.value = "New Frame Project";
+          newProjectModal.classList.add("active");
+          setTimeout(() => inputEl?.select(), 100);
+        });
+        document.getElementById("btn-close-new-project-modal").addEventListener("click", () => newProjectModal.classList.remove("active"));
+        document.getElementById("btn-cancel-new-project").addEventListener("click", () => newProjectModal.classList.remove("active"));
+
+        document.getElementById("btn-confirm-new-project").addEventListener("click", () => {
+          const nameVal = document.getElementById("new-project-name")?.value.trim() || "New Frame Project";
+          const presetVal = document.getElementById("new-project-preset")?.value || "specs_buddy_sample";
+          const modeVal = document.querySelector('input[name="new-project-mode"]:checked')?.value || "clone";
+
+          let baseCanvas = {
+            width: 81,
+            height: 12,
+            unit: "mm",
+            isDumbbell: true,
+            printableWidth: 55,
+            tailWidth: 26,
+            tailHeight: 3.5,
+            printOffsetX: 0,
+            printOffsetY: 0
+          };
+
+          if (presetVal === "specs_buddy_91mm") {
+            baseCanvas.width = 91;
+            baseCanvas.tailWidth = 36;
+          } else if (presetVal === "specs_tag_head_only") {
+            baseCanvas.width = 55;
+            baseCanvas.isDumbbell = false;
+            baseCanvas.printableWidth = 55;
+            baseCanvas.tailWidth = 0;
+          }
+
+          let baseElements = [];
+          if (modeVal === "clone") {
+            baseElements = JSON.parse(JSON.stringify(SAMPLE_SPECS_TAG.elements));
+            const modelElem = baseElements.find(e => e.id.includes("model") || e.id.includes("frame"));
+            if (modelElem) modelElem.content = nameVal;
+          }
+
+          const newTemplate = {
+            id: "proj_" + Date.now(),
+            name: nameVal,
+            canvas: baseCanvas,
+            elements: baseElements,
+            zoom: 3.5,
+            snapGrid: 0.5
+          };
+
+          studio.loadTemplate(newTemplate);
+          saveCurrentProject(nameVal);
+          syncQuickInputsFromCanvas();
+          newProjectModal.classList.remove("active");
+          showToast(`Created & loaded new project "${nameVal}"!`);
         });
 
         // Snap selector
