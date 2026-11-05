@@ -369,6 +369,11 @@
         </div>
 
         <!-- Import Section & List Header -->
+        <div style="background:#0369a120;border:1px solid #0284c7;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:0.78rem;color:#7dd3fc;display:flex;align-items:center;gap:8px;">
+          <span>💡</span>
+          <span>Click <b>"▶ Load"</b> on any design below to restore its exact positions &amp; sizes onto the canvas!</span>
+        </div>
+
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #334155;">
           <h4 style="font-size:0.9rem;color:#ffffff;margin:0;">My Saved Projects:</h4>
           <div>
@@ -509,7 +514,35 @@
       function getSavedProjects() {
         try {
           const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
-          return raw ? JSON.parse(raw) : {};
+          let projects = raw ? JSON.parse(raw) : null;
+          if (!projects || typeof projects !== 'object') {
+            projects = {};
+          }
+
+          // Always ensure default presets are available so the list is never empty
+          if (!projects["proj_default_specs"]) {
+            projects["proj_default_specs"] = {
+              id: "proj_default_specs",
+              name: "Specs Buddy Sample Tag (81 × 12 mm)",
+              savedAt: "Preset Master",
+              canvas: JSON.parse(JSON.stringify(SAMPLE_SPECS_TAG.canvas)),
+              elements: JSON.parse(JSON.stringify(SAMPLE_SPECS_TAG.elements)),
+              zoom: 3.5,
+              snapGrid: 0.5
+            };
+          }
+
+          // Include master default if saved
+          try {
+            const masterRaw = localStorage.getItem("cad_master_default_layout");
+            if (masterRaw && !projects["master_default"]) {
+              const m = JSON.parse(masterRaw);
+              if (m && m.elements) projects["master_default"] = m;
+            }
+          } catch (e) {}
+
+          try { localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects)); } catch(e) {}
+          return projects;
         } catch (e) {
           return {};
         }
@@ -517,10 +550,10 @@
 
       function saveCurrentProject(nameInput) {
         const inputEl = document.getElementById("input-save-project-name");
-        const name = (nameInput || (inputEl ? inputEl.value : "") || "").trim();
+        let name = (nameInput || (inputEl ? inputEl.value : "") || "").trim();
         if (!name) {
-          showToast("Please enter a name for your design!");
-          return;
+          const modelElem = studio?.elements.find(e => e.id.includes("model") || e.id.includes("frame"));
+          name = modelElem ? `${modelElem.content} Tag` : "My Specs Buddy Tag";
         }
 
         const projects = getSavedProjects();
@@ -551,7 +584,6 @@
 
         renderSavedProjectsList();
         populateTemplateDropdown();
-        if (inputEl) inputEl.value = "";
         showToast(`Design "${name}" saved to Disk & Browser!`);
       }
 
@@ -657,7 +689,7 @@
         if (ids.length === 0) {
           container.innerHTML = `
             <div style="text-align:center;padding:24px;color:#94a3b8;font-size:0.85rem;">
-              No custom designs saved yet.<br>Customize your tag on the canvas and click "Save Project" above!
+              No custom designs saved yet.<br>Click "Save Project" above to save your canvas design!
             </div>
           `;
           return;
@@ -666,24 +698,31 @@
         let html = "";
         ids.forEach(id => {
           const p = projects[id];
+          const isMaster = id === "master_default";
+          const borderStyle = isMaster ? "border:1px solid #eab308;background:#1e1b4b;" : "border:1px solid #334155;background:#0f172a;";
           html += `
-            <div style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;">
+            <div style="${borderStyle}border-radius:6px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;">
               <div>
-                <div style="font-size:0.88rem;font-weight:bold;color:#f8fafc;">${escapeHtml(p.name)}</div>
+                <div style="font-size:0.88rem;font-weight:bold;color:#f8fafc;display:flex;align-items:center;gap:6px;">
+                  ${escapeHtml(p.name)}
+                  ${isMaster ? '<span style="background:#eab308;color:#000;font-size:0.65rem;padding:1px 6px;border-radius:4px;font-weight:900;">MASTER</span>' : ''}
+                </div>
                 <div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;">
                   ${p.canvas.width} × ${p.canvas.height} mm ${p.canvas.isDumbbell ? '(Dumbbell Tag)' : ''} • ${p.elements.length} elements • ${p.savedAt || ''}
                 </div>
               </div>
               <div style="display:flex;gap:6px;">
-                <button class="ribbon-btn btn-proj-load" data-id="${p.id}" style="background:#10b981;border-color:#10b981;color:#fff;font-weight:bold;padding:4px 10px;font-size:0.75rem;">
-                  ▶️ Load
+                <button class="ribbon-btn btn-proj-load" data-id="${p.id}" style="background:#10b981;border-color:#10b981;color:#fff;font-weight:bold;padding:4px 10px;font-size:0.75rem;" title="Load this design onto canvas">
+                  ▶ Load
                 </button>
                 <button class="ribbon-btn btn-proj-export" data-id="${p.id}" style="background:#0284c7;border-color:#0284c7;color:#fff;padding:4px 8px;font-size:0.75rem;" title="Download .json file">
-                  ⬇️
+                  ⬇ JSON
                 </button>
-                <button class="ribbon-btn btn-proj-del" data-id="${p.id}" style="color:#ef4444;border-color:#ef4444;padding:4px 8px;font-size:0.75rem;" title="Delete project">
-                  🗑️
-                </button>
+                ${!isMaster ? `
+                  <button class="ribbon-btn btn-proj-del" data-id="${p.id}" style="color:#ef4444;border-color:#ef4444;padding:4px 8px;font-size:0.75rem;" title="Delete project">
+                    🗑
+                  </button>
+                ` : ''}
               </div>
             </div>
           `;
@@ -868,9 +907,11 @@
         });
 
         document.getElementById("btn-lock-master-layout").addEventListener("click", () => {
+          const modelElem = studio?.elements.find(e => e.id.includes("model") || e.id.includes("frame"));
+          const modelName = modelElem ? modelElem.content : "Heavy Metal Frame";
           const masterSnapshot = {
             id: "master_default",
-            name: "Master Default Template",
+            name: `⭐ Master Layout (${modelName})`,
             savedAt: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             canvas: JSON.parse(JSON.stringify(studio.canvas)),
             elements: JSON.parse(JSON.stringify(studio.elements)),
@@ -879,6 +920,9 @@
           };
           try {
             localStorage.setItem("cad_master_default_layout", JSON.stringify(masterSnapshot));
+            const projects = getSavedProjects();
+            projects["master_default"] = masterSnapshot;
+            localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
           } catch(e) {}
           fetch("/api/projects", {
             method: "POST",
@@ -886,7 +930,9 @@
             body: JSON.stringify(masterSnapshot)
           }).catch(() => {});
 
-          showToast("⭐ Locked! These exact positions & sizes are now your Master Template.");
+          renderSavedProjectsList();
+          populateTemplateDropdown();
+          showToast("⭐ Locked! Master Template saved & added to My Projects.");
         });
 
         syncQuickInputsFromCanvas();
@@ -894,15 +940,29 @@
         // Project Management Modal Events
         const projectsModal = document.getElementById("modal-projects");
         document.getElementById("btn-save-project-ribbon").addEventListener("click", () => {
-          renderSavedProjectsList();
+          const modelElem = studio?.elements.find(e => e.id.includes("model") || e.id.includes("frame"));
+          const defaultName = modelElem ? `${modelElem.content} Tag` : "Specs Buddy Custom Tag";
+          saveCurrentProject(defaultName);
+          const inputEl = document.getElementById("input-save-project-name");
+          if (inputEl) inputEl.value = defaultName;
+          syncProjectsFromServer();
           projectsModal.classList.add("active");
-          setTimeout(() => document.getElementById("input-save-project-name")?.focus(), 100);
         });
         document.getElementById("btn-my-projects-ribbon").addEventListener("click", () => {
+          const modelElem = studio?.elements.find(e => e.id.includes("model") || e.id.includes("frame"));
+          const defaultName = modelElem ? `${modelElem.content} Tag` : "Specs Buddy Custom Tag";
+          const inputEl = document.getElementById("input-save-project-name");
+          if (inputEl && !inputEl.value) inputEl.value = defaultName;
+          syncProjectsFromServer();
           renderSavedProjectsList();
           projectsModal.classList.add("active");
         });
         document.getElementById("rail-btn-projects").addEventListener("click", () => {
+          const modelElem = studio?.elements.find(e => e.id.includes("model") || e.id.includes("frame"));
+          const defaultName = modelElem ? `${modelElem.content} Tag` : "Specs Buddy Custom Tag";
+          const inputEl = document.getElementById("input-save-project-name");
+          if (inputEl && !inputEl.value) inputEl.value = defaultName;
+          syncProjectsFromServer();
           renderSavedProjectsList();
           projectsModal.classList.add("active");
         });
