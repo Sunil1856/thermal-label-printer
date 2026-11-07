@@ -1,13 +1,26 @@
 {
   "name": "thermal-label-printer",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.1.0",
+  "description": "Professional Thermal Label Printing CAD & Barcode Studio for Eyewear, Jewelry & Retail (Windows, Linux, macOS)",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "app": "electron .",
+    "desktop": "electron .",
+    "test": "node test_v190.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "keywords": [
+    "thermal-printer",
+    "label-printer",
+    "cad",
+    "barcode",
+    "dumbbell-tag",
+    "specs-buddy",
+    "electron"
+  ],
+  "author": "Sunil1856",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^45.2.3"
+  }
 }

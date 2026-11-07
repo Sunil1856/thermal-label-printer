@@ -175,6 +175,12 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`🌐 From ANY other desktop:  http://${ip}:${PORT}`);
   console.log(`======================================================\n`);
 
-  // Open default browser on this PC
-  exec(`start http://localhost:${PORT}`);
+  // Open default browser on this PC (Cross-Platform for Windows, macOS, Linux)
+  let openCmd = `start http://localhost:${PORT}`;
+  if (process.platform === 'darwin') {
+    openCmd = `open http://localhost:${PORT}`;
+  } else if (process.platform === 'linux') {
+    openCmd = `xdg-open http://localhost:${PORT}`;
+  }
+  exec(openCmd, () => {});
 });
